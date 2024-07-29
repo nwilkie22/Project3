@@ -35,6 +35,7 @@ class Face(pygame.sprite.Sprite):
         self.ypos = ypos
         self.size = size
 
+    # draws a 3x3 face
     def drawFace(self, screen):
         # draws a face
         for i in range(3):
