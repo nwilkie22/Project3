@@ -8,10 +8,9 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 ORANGE = (255, 128, 0)
 WHITE = (255, 255, 255)
-colorList = [BLUE, WHITE, YELLOW, RED, GREEN, ORANGE]
+colorList = [BLUE, GREEN, YELLOW, RED, WHITE, ORANGE]
 
 class RubiksCube(pygame.sprite.Sprite):
-
     def __init__(self, xpos, ypos, size = 30):
         pygame.sprite.Sprite.__init__(self)
         self.xpos = xpos
