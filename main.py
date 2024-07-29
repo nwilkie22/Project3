@@ -11,6 +11,7 @@ pygame.display.set_caption('Rubiks Cube Solver')
 screen.fill(background_color)
 
 cube = RubiksCube(100,100)
+print(cube.isSolved())
 
 
 active = True
