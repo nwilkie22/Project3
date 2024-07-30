@@ -87,7 +87,7 @@ class RubiksCube(pygame.sprite.Sprite):
         for face in self.faces:
             face.drawFace(screen)
 
-    # ROTATIONS
+    # ROTATIO
     # reference for moves
     # https://jperm.net/3x3/moves
     def cubeRotation(self, rotation_type, direction):
