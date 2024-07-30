@@ -68,20 +68,26 @@ class RubiksCube(pygame.sprite.Sprite):
         for i in range(4):
             self.faces[i].xpos = self.xpos + i * self.size * 3
             self.faces[i].ypos = self.ypos
+            print("Face " + str(i) + " pos " + str(self.faces[i].xpos) + " + " + str(self.faces[i].ypos))
         # up
         self.faces[4].xpos = self.xpos + self.size * 3
         self.faces[4].ypos = self.ypos - self.size * 3
+        print("Face 4 pos " + str(self.faces[4].xpos) + " + " + str(self.faces[4].ypos))
         # down
         self.faces[5].xpos = self.xpos + self.size * 3
         self.faces[5].ypos = self.ypos + self.size * 3
+        print("Face 5 pos " + str(self.faces[5].xpos) + " + " + str(self.faces[5].ypos))
+        print()
 
         for face in self.faces:
+            print("Face: " + str(face.initial_color))
             face.recalculate_squares()
 
     def draw(self, screen):
         for face in self.faces:
             face.drawFace(screen)
 
+    # ROTATIONS
     # reference for moves
     # https://jperm.net/3x3/moves
     def cubeRotation(self, rotation_type, direction):
@@ -110,10 +116,10 @@ class RubiksCube(pygame.sprite.Sprite):
                 raise ValueError("Invalid direction.")
 
         elif rotation_type == "z":  # Rotating around the z-axis
-            if direction == 0:  # Clockwise
-                new_order = [0, 3, 2, 1, 4, 5]
-            elif direction == 1:  # Counterclockwise
-                new_order = [2, 1, 0, 3, 4, 5]
+            if direction == 0:  # Left
+                new_order = [4, 1, 5, 3, 2, 0]
+            elif direction == 1:  # Right
+                new_order = [5, 1, 4, 3, 2, 0]
             else:
                 raise ValueError("Invalid direction.")
 
@@ -124,11 +130,11 @@ class RubiksCube(pygame.sprite.Sprite):
             new_faces.append(self.faces[num])
         self.faces = new_faces
 
+        for face in self.faces:
+            print("Face: " + str(face.initial_color))
+
         self.recalculate_faces()
 
-    def printfaces(self):
-        for face in self.faces:
-            print(face.squares[0].color)
     def faceTurn(self):
         print()
 
@@ -138,6 +144,10 @@ class RubiksCube(pygame.sprite.Sprite):
     def sliceMove(self):
         print()
 
+    # HELPER FUNCTIONS
+    def printfaces(self):
+        for face in self.faces:
+            print(face.squares[0].color)
     def isSolved(self):
         for face in self.faces:
             for square in face.squares:
@@ -169,9 +179,10 @@ class Face(pygame.sprite.Sprite):
         count = 0
         for square in self.squares:
             square.xpos = self.xpos + (count // 3) * self.size
-            self.ypos = self.ypos + (count % 3) * self.size
-            # print("square " + str(count) + " pos: " + (str(self.xpos)) + ", " + (str(self.ypos)))
+            square.ypos = self.ypos + (count % 3) * self.size
+            print("square " + str(count) + " pos: " + (str(square.xpos)) + ", " + (str(square.ypos)))
             count += 1
+        print()
 
     # draws a 3x3 face
     def drawFace(self, screen):
