@@ -29,6 +29,7 @@ pygame.display.set_caption('Rubiks Cube Solver')
 
 screen.fill(background_color)
 
+#we need to have the drawing in the loop
 cube = RubiksCube(100,100)
 print(cube.isSolved())
 algo1 = draw_button(screen, "Algorithm 1", 300, 600)
@@ -41,7 +42,15 @@ while active:
         if event.type == pygame.QUIT:
             active = False
 
+        # temp code for testing rotationsr
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                cube.cubeRotation("x", 0)
+                print("pressed")
+
+    screen.fill(background_color)
     cube.draw(screen)
     pygame.display.flip()
+cube.printfaces()
 pygame.quit()
 
