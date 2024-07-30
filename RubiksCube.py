@@ -97,8 +97,7 @@ class RubiksCube(pygame.sprite.Sprite):
         # 2 directions: 0: Up/Left, 1: Down/Right
         # initial order: 0, 1, 2, 3, 4, 5
 
-        new_faces = []
-
+        # rotation types
         if rotation_type == "x":  # Rotating around the x-axis
             if direction == 0:  # Left
                 new_order = [1, 2, 3, 0, 4, 5]
@@ -126,6 +125,8 @@ class RubiksCube(pygame.sprite.Sprite):
         else:
             raise ValueError("Invalid rotation type.")
 
+        # reorder the "faces" array to reflect the rotation
+        new_faces = []
         for num in new_order:
             new_faces.append(self.faces[num])
         self.faces = new_faces
@@ -135,9 +136,57 @@ class RubiksCube(pygame.sprite.Sprite):
 
         self.recalculate_faces()
 
-    def faceTurn(self):
-        print()
+    def squareSwap(self, colors_to_move, squares_to_move_to):
+        temp = [squares_to_move_to[0].color, squares_to_move_to[1].color, squares_to_move_to[2].color]
+        for i in range(3):
+            print("Color: " + str(colors_to_move[0]) + " moving to: " + str(squares_to_move_to[0].color))
+            squares_to_move_to[i].color = colors_to_move[i]
+        return temp
+    def faceTurn(self, rotation_type, direction):
+        # rotate a face (will affect adjacent faces)
+        # rotation type is in relation to the front face (see https://jperm.net/3x3/moves)
+        # 6 rotation types: U: up, D: down, R: right, L: left, F: front, B: back
+        # 2 directions: 0: clockwise, 1: counterclockwise
 
+        current_face = self.faces[1]
+        if rotation_type == "U":
+            colors_to_move = [current_face.squares[0].color, current_face.squares[3].color, current_face.squares[6].color]
+
+            # part 1
+            if direction == 0:
+                next_face = self.faces[0]
+            elif direction == 1:
+                next_face = self.faces[2]
+            else:
+                raise ValueError("Invalid direction.")
+
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 2
+            next_face = self.faces[3]
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            temp = [squares_to_move_to[0].color, squares_to_move_to[1].color, squares_to_move_to[2].color]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 3
+            if direction == 0:
+                next_face = self.faces[2]
+            else:
+                next_face = self.faces[0]
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 4
+            next_face = self.faces[1]
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            self.squareSwap(colors_to_move, squares_to_move_to)
+
+        self.recalculate_faces()
+
+
+
+    # This function is just doing two moves at once so it should be easy once we figure out face turn
     def wideMove(self):
         print()
 
@@ -209,3 +258,6 @@ class Square(pygame.sprite.Sprite):
         rect = pygame.Rect(self.xpos, self.ypos, self.size, self.size)
         pygame.draw.rect(screen, self.color, rect)
         pygame.draw.rect(screen, (0, 0, 0), rect, 1)
+
+    def recolor(self, color):
+        self.color = color
