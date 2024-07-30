@@ -10,6 +10,26 @@ ORANGE = (255, 128, 0)
 WHITE = (255, 255, 255)
 colorList = [BLUE, GREEN, YELLOW, RED, WHITE, ORANGE]
 
+# define adjacent faces
+adjacent_faces = {
+    0: [4, 1, 5, 3],  # Left face: Up, Front, Down, Back
+    1: [4, 0, 5, 2],  # Front face: Up, Left, Down, Right
+    2: [4, 3, 5, 1],  # Right face: Up, Back, Down, Front
+    3: [4, 2, 5, 0],  # Back face: Up, Right, Down, Left
+    4: [3, 2, 1, 0],  # Up face: Back, Right, Front, Left
+    5: [1, 2, 3, 0]  # Down face: Front, Right, Back, Left
+}
+
+# define face indices
+face_indices = {
+    "Left": 0,
+    "Front": 1,
+    "Right": 2,
+    "Back": 3,
+    "Up": 4,
+    "Down": 5
+}
+
 class RubiksCube(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size = 30):
         pygame.sprite.Sprite.__init__(self)
@@ -45,6 +65,20 @@ class RubiksCube(pygame.sprite.Sprite):
     def draw(self, screen):
         for face in self.faces:
             face.drawFace(screen)
+
+    # reference for moves
+    # https://jperm.net/3x3/moves
+    def cubeRotation(self):
+        print()
+
+    def faceTurn(self):
+        print()
+
+    def wideMove(self):
+        print()
+
+    def sliceMove(self):
+        print()
 
     def isSolved(self):
         for face in self.faces:
