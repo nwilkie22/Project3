@@ -43,6 +43,9 @@ while active:
             if event.key == pygame.K_r:
                 cube.sliceMove("S", 0)
                 print("pressed")
+            if event.key == pygame.K_e:
+                cube.sliceMove("E", 0)
+                print("pressed")
 
     screen.fill(background_color)
     cube.draw(screen)

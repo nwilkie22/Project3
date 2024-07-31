@@ -8,7 +8,7 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 ORANGE = (255, 128, 0)
 WHITE = (255, 255, 255)
-colorList = [BLUE, GREEN, YELLOW, RED, WHITE, ORANGE]
+colorList = [BLUE, GREEN, YELLOW, ORANGE, WHITE, RED]
 
 # define adjacent faces
 adjacent_faces = {
@@ -392,103 +392,17 @@ class RubiksCube(pygame.sprite.Sprite):
         current_face = self.faces[1]
         # M
         if rotation_type == "M":
-            colors_to_move = [current_face.squares[1].color, current_face.squares[4].color, current_face.squares[7].color]
-
-            # part 1
-            if direction == 0:
-                next_face = self.faces[0]
-            elif direction == 1:
-                next_face = self.faces[2]
-            else:
-                raise ValueError("Invalid direction.")
-
-            squares_to_move_to = [next_face.squares[1], next_face.squares[4], next_face.squares[7]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 2
-            next_face = self.faces[3]
-            squares_to_move_to = [next_face.squares[1], next_face.squares[4], next_face.squares[7]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 3
-            if direction == 0:
-                next_face = self.faces[2]
-            else:
-                next_face = self.faces[0]
-            squares_to_move_to = [next_face.squares[1], next_face.squares[4], next_face.squares[7]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 4
-            next_face = self.faces[1]
-            squares_to_move_to = [next_face.squares[1], next_face.squares[4], next_face.squares[7]]
-            self.squareSwap(colors_to_move, squares_to_move_to)
-
+            self.faceTurn("R", 0)
+            self.faceTurn("L", 1)
+            self.cubeRotation("x", 0)
         if rotation_type == "E":
-            colors_to_move = [current_face.squares[3].color, current_face.squares[4].color,
-                              current_face.squares[5].color]
-
-            # part 1
-            if direction == 0:
-                next_face = self.faces[5]
-            elif direction == 1:
-                next_face = self.faces[4]
-            else:
-                raise ValueError("Invalid direction.")
-
-            squares_to_move_to = [next_face.squares[3], next_face.squares[4], next_face.squares[5]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 2
-            next_face = self.faces[3]
-            squares_to_move_to = [next_face.squares[3], next_face.squares[4], next_face.squares[5]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 3
-            if direction == 0:
-                next_face = self.faces[4]
-            else:
-                next_face = self.faces[5]
-            squares_to_move_to = [next_face.squares[3], next_face.squares[4], next_face.squares[5]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 4
-            next_face = self.faces[1]
-            squares_to_move_to = [next_face.squares[3], next_face.squares[4], next_face.squares[5]]
-            self.squareSwap(colors_to_move, squares_to_move_to)
-
+            self.faceTurn("U", 0)
+            self.faceTurn("D", 1)
+            self.cubeRotation("y", 1)
         if rotation_type == "S":
-            side_face = self.faces[2]
-            colors_to_move = [side_face.squares[0].color, side_face.squares[1].color, side_face.squares[2].color]
-
-            # part 1
-            if direction == 0:
-                next_face = self.faces[5]
-            elif direction == 1:
-                next_face = self.faces[4]
-            else:
-                raise ValueError("Invalid direction.")
-
-            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 2
-            next_face = self.faces[0]
-            squares_to_move_to = [next_face.squares[6], next_face.squares[7], next_face.squares[8]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 3
-            if direction == 0:
-                next_face = self.faces[4]
-            else:
-                next_face = self.faces[5]
-            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
-            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-            # part 4
-            next_face = self.faces[2]
-            squares_to_move_to = [next_face.squares[0], next_face.squares[1], next_face.squares[2]]
-            self.squareSwap(colors_to_move, squares_to_move_to)
-
+            self.faceTurn("F", 0)
+            self.faceTurn("B", 1)
+            #self.cubeRotation("z", 0)
 
     # need slice moves before we can implement this
     def wideMove(self, rotation_type, direction):
