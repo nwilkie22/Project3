@@ -53,4 +53,3 @@ while active:
     pygame.display.flip()
 cube.printfaces()
 pygame.quit()
-
