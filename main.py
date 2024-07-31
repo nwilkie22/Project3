@@ -9,7 +9,7 @@ def draw_button(screen, text, button_x, button_y):
     button_color = (255, 99, 71)
     text_color = (255, 255, 255)
     font = pygame.font.Font(None, 50)
-    button_width = 150
+    button_width = len(text)*20
     button_height = 75
     button_surface = pygame.Surface((button_width, button_height))
     button_surface.fill(button_color)
@@ -29,12 +29,8 @@ pygame.display.set_caption('Rubiks Cube Solver')
 
 screen.fill(background_color)
 
-#we need to have the drawing in the loop
 cube = RubiksCube(100,100)
 print(cube.isSolved())
-algo1 = draw_button(screen, "Algorithm 1", 300, 600)
-algo2 = draw_button(screen, "Algorithm 2", 50, 600)
-scramble = draw_button(screen, "Scramble", 500, 600)
 
 active = True
 while active:
@@ -50,6 +46,9 @@ while active:
 
     screen.fill(background_color)
     cube.draw(screen)
+    algo1 = draw_button(screen, "Algorithm 1", 280, 600)
+    algo2 = draw_button(screen, "Algorithm 2", 50, 600)
+    scramble = draw_button(screen, "Scramble", 510, 600)
     pygame.display.flip()
 cube.printfaces()
 pygame.quit()
