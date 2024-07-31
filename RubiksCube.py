@@ -397,6 +397,7 @@ class RubiksCube(pygame.sprite.Sprite):
     def printfaces(self):
         for face in self.faces:
             print(face.squares[0].color)
+
     def isSolved(self):
         for face in self.faces:
             for square in face.squares:
