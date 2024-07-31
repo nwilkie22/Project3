@@ -319,7 +319,10 @@ class RubiksCube(pygame.sprite.Sprite):
             else:
                 raise ValueError("Invalid direction.")
 
-            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            if direction == 0:
+                squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            if direction == 1:
+                squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
             colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
             # part 2
@@ -332,7 +335,11 @@ class RubiksCube(pygame.sprite.Sprite):
                 next_face = self.faces[4]
             else:
                 next_face = self.faces[5]
-            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+
+            if direction == 0:
+                squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            if direction == 1:
+                squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
             colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
             # part 4
@@ -356,7 +363,10 @@ class RubiksCube(pygame.sprite.Sprite):
             else:
                 raise ValueError("Invalid direction.")
 
-            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            if direction == 0:
+                squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            if direction == 1:
+                squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
             colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
             # part 2
@@ -369,7 +379,10 @@ class RubiksCube(pygame.sprite.Sprite):
                 next_face = self.faces[5]
             else:
                 next_face = self.faces[4]
-            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            if direction == 0:
+                squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            if direction == 1:
+                squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
             colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
             # part 4
@@ -402,7 +415,6 @@ class RubiksCube(pygame.sprite.Sprite):
         if rotation_type == "S":
             self.faceTurn("F", 0)
             self.faceTurn("B", 1)
-            #self.cubeRotation("z", 0)
 
     # need slice moves before we can implement this
     def wideMove(self, rotation_type, direction):
