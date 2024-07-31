@@ -97,31 +97,31 @@ class RubiksCube(pygame.sprite.Sprite):
         # does not move any squares in relation to each other
         # just changes which face is at the front
         # 3 rotation types: x: R direction, y: U direction, and z: F direction
-        # 2 directions: 0: Up/Left, 1: Down/Right
+        # 2 directions: 0: Normal Direction, 1: Prime Direction
         # initial order: 0, 1, 2, 3, 4, 5
 
         # rotation types
         if rotation_type == "x":  # Rotating around the x-axis
-            if direction == 0:  # Left
-                new_order = [1, 2, 3, 0, 4, 5]
-            elif direction == 1:  # Right
-                new_order = [3, 0, 1, 2, 4, 5]
+            if direction == 0:  # X
+                new_order = [0, 5, 2, 4, 1, 3]
+            elif direction == 1:  # X'
+                new_order = [0, 4, 2, 5, 3, 1]
             else:
                 raise ValueError("Invalid direction")
 
         elif rotation_type == "y":  # Rotating around the y-axis
-            if direction == 0:  # Up
-                new_order = [0, 5, 2, 4, 1, 3]
-            elif direction == 1:  # Down
-                new_order = [0, 4, 2, 5, 3, 1]
+            if direction == 0:  # Y
+                new_order = [1, 2, 3, 0, 4, 5]
+            elif direction == 1:  # Y'
+                new_order = [3, 0, 1, 2, 4, 5]
             else:
                 raise ValueError("Invalid direction.")
 
         elif rotation_type == "z":  # Rotating around the z-axis
-            if direction == 0:  # Left
+            if direction == 0:  # Z
+                new_order = [5, 1, 4, 3, 0, 2]
+            elif direction == 1:  # Z'
                 new_order = [4, 1, 5, 3, 2, 0]
-            elif direction == 1:  # Right
-                new_order = [5, 1, 4, 3, 2, 0]
             else:
                 raise ValueError("Invalid direction.")
 
@@ -407,11 +407,11 @@ class RubiksCube(pygame.sprite.Sprite):
         if rotation_type == "M":
             self.faceTurn("R", 0)
             self.faceTurn("L", 1)
-            self.cubeRotation("x", 0)
+            self.cubeRotation("y", 0)
         if rotation_type == "E":
             self.faceTurn("U", 0)
             self.faceTurn("D", 1)
-            self.cubeRotation("y", 1)
+            self.cubeRotation("x", 1)
         if rotation_type == "S":
             self.faceTurn("F", 0)
             self.faceTurn("B", 1)
