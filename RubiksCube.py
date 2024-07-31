@@ -173,7 +173,7 @@ class RubiksCube(pygame.sprite.Sprite):
 
         current_face = self.faces[1]
         # UP
-        if rotation_type == "L":
+        if rotation_type == "U":
             colors_to_move = [current_face.squares[0].color, current_face.squares[3].color, current_face.squares[6].color]
 
             # part 1
@@ -206,7 +206,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.squareSwap(colors_to_move, squares_to_move_to)
 
         # DOWN
-        elif rotation_type == "R":
+        elif rotation_type == "D":
             colors_to_move = [current_face.squares[2].color, current_face.squares[5].color, current_face.squares[8].color]
 
             # part 1
@@ -239,7 +239,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.squareSwap(colors_to_move, squares_to_move_to)
 
         # RIGHT
-        elif rotation_type == "U":
+        elif rotation_type == "R":
             colors_to_move = [current_face.squares[6].color, current_face.squares[7].color, current_face.squares[8].color]
 
             # part 1
@@ -272,7 +272,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.squareSwap(colors_to_move, squares_to_move_to)
 
         #LEFT
-        elif rotation_type == "D":
+        elif rotation_type == "L":
             colors_to_move = [current_face.squares[0].color, current_face.squares[1].color, current_face.squares[2].color]
 
             # part 1
