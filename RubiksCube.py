@@ -166,7 +166,6 @@ class RubiksCube(pygame.sprite.Sprite):
             # part 2
             next_face = self.faces[3]
             squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
-            temp = [squares_to_move_to[0].color, squares_to_move_to[1].color, squares_to_move_to[2].color]
             colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
             # part 3
@@ -182,6 +181,47 @@ class RubiksCube(pygame.sprite.Sprite):
             squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
             self.squareSwap(colors_to_move, squares_to_move_to)
 
+        elif rotation_type == "D":
+            colors_to_move = [current_face.squares[2].color, current_face.squares[5].color, current_face.squares[8].color]
+
+            # part 1
+            if direction == 0:
+                next_face = self.faces[2]
+            elif direction == 1:
+                next_face = self.faces[0]
+            else:
+                raise ValueError("Invalid direction.")
+
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 2
+            next_face = self.faces[3]
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 3
+            if direction == 0:
+                next_face = self.faces[0]
+            else:
+                next_face = self.faces[2]
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+            # part 4
+            next_face = self.faces[1]
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+            self.squareSwap(colors_to_move, squares_to_move_to)
+        elif rotation_type == "R":
+            print()
+        elif rotation_type == "L":
+            print()
+        elif rotation_type == "F":
+            print()
+        elif rotation_type == "B":
+            print()
+        else:
+            raise ValueError("Invalid rotation type.")
         self.recalculate_faces()
 
 
