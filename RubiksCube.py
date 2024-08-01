@@ -283,6 +283,18 @@ class RubiksCube(pygame.sprite.Sprite):
             self.rotation(1)
             self.cubeRotation("x", 0)
             self.cubeRotation("x", 0)
+        if rotation_type == "S":
+            self.faceTurn("F'")
+            self.faceTurn("B")
+            self.cubeRotation("z", 0)
+        if rotation_type == "M":
+            self.faceTurn("L'")
+            self.faceTurn("R")
+            self.cubeRotation("x", 1)
+        if rotation_type == "E":
+            self.faceTurn("D'")
+            self.faceTurn("U")
+            self.cubeRotation("y", 1)
 
     # HELPER FUNCTIONS
     def printfaces(self):

@@ -43,6 +43,7 @@ while active:
         # Press key for rotation, press space to switch from prime to not prime
         if event.type == pygame.KEYDOWN:
 
+            # Prime toggle
             if event.key == pygame.K_SPACE:
                 prime = not prime
                 if prime:
@@ -50,6 +51,7 @@ while active:
                 else:
                     print("Not Prime")
 
+            # Basic moves
             if event.key == pygame.K_u:
                 if prime == False:
                     cube.faceTurn("U")
@@ -80,12 +82,23 @@ while active:
                 else:
                     cube.faceTurn("F'")
 
-            # for debugging step by step
             if event.key == pygame.K_b:
                 if prime == False:
                     cube.faceTurn("B")
                 else:
                     cube.faceTurn("B'")
+
+            # Slice moves
+            if event.key == pygame.K_s:
+                    cube.faceTurn("S")
+            if event.key == pygame.K_m:
+                    cube.faceTurn("M")
+            if event.key == pygame.K_e:
+                cube.faceTurn("E")
+
+            # Wide moves
+            
+
 
 
 
