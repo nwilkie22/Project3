@@ -41,8 +41,19 @@ while active:
         # temp code for testing rotationsr
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
-                cube.faceTurn("U'", 0)
+                cube.faceTurn("B", 0)
                 print("pressed")
+
+            # for debugging step by step
+            if event.key == pygame.K_1:
+                cube.cubeRotation("y", 1)
+
+            if event.key == pygame.K_2:
+                cube.rotation(0)
+
+            if event.key == pygame.K_3:
+                cube.cubeRotation("y", 0)
+
 
 
     screen.fill(background_color)

@@ -62,6 +62,7 @@ class RubiksCube(pygame.sprite.Sprite):
         self.faces.append(face)
 
         print(self.faces)
+        self.faces[3].squares[0].recolor(RED)
 
     def recalculate_faces(self):
         # L -> B
@@ -131,10 +132,9 @@ class RubiksCube(pygame.sprite.Sprite):
                 self.faceRotate(self.faces[2], 0)
                 self.faceRotate(self.faces[3], 1)
                 self.faceRotate(self.faces[3], 1)
-                self.faceRotate(self.faces[4], 1)
-                self.faceRotate(self.faces[4], 1)
-                #self.faceRotate(self.faces[5], 1)
-                #self.faceRotate(self.faces[5], 1)
+                self.faceRotate(self.faces[5], 1)
+                self.faceRotate(self.faces[5], 1)
+
             if direction == 1:
                 self.faceRotate(self.faces[0], 0)
                 self.faceRotate(self.faces[2], 1)
@@ -142,8 +142,35 @@ class RubiksCube(pygame.sprite.Sprite):
                 self.faceRotate(self.faces[3], 1)
                 self.faceRotate(self.faces[4], 1)
                 self.faceRotate(self.faces[4], 1)
-                #self.faceRotate(self.faces[5], 1)
-                #self.faceRotate(self.faces[5], 1)
+
+        if rotation_type == "y":
+            if direction == 0:
+                self.faceRotate(self.faces[2], 1)
+                self.faceRotate(self.faces[2], 1)
+                self.faceRotate(self.faces[3], 1)
+                self.faceRotate(self.faces[3], 1)
+                self.faceRotate(self.faces[4], 0)
+                self.faceRotate(self.faces[5], 1)
+            if direction == 1:
+                self.faceRotate(self.faces[0], 1)
+                self.faceRotate(self.faces[0], 1)
+                self.faceRotate(self.faces[3], 1)
+                self.faceRotate(self.faces[3], 1)
+                self.faceRotate(self.faces[4], 1)
+                self.faceRotate(self.faces[5], 0)
+
+        if rotation_type == "z":
+            if direction == 0:
+                self.faceRotate(self.faces[0], 0)
+                self.faceRotate(self.faces[2], 0)
+                self.faceRotate(self.faces[4], 0)
+                self.faceRotate(self.faces[5], 0)
+            if direction == 1:
+                self.faceRotate(self.faces[0], 1)
+                self.faceRotate(self.faces[2], 1)
+                self.faceRotate(self.faces[4], 1)
+                self.faceRotate(self.faces[5], 1)
+
         for face in self.faces:
             print("Face: " + str(face.initial_color))
 
@@ -231,6 +258,52 @@ class RubiksCube(pygame.sprite.Sprite):
             self.cubeRotation("x", 1)
             self.rotation(1)
             self.cubeRotation("x", 0)
+
+        if rotation_type == "D":
+            self.cubeRotation("x", 0)
+            self.rotation(0)
+            self.cubeRotation("x", 1)
+        if rotation_type == "D'":
+            self.cubeRotation("x", 0)
+            self.rotation(1)
+            self.cubeRotation("x", 1)
+
+        if rotation_type == "L":
+            self.cubeRotation("y", 1)
+            self.rotation(0)
+            self.cubeRotation("y", 0)
+        if rotation_type == "L'":
+            self.cubeRotation("y", 1)
+            self.rotation(1)
+            self.cubeRotation("y", 0)
+
+        if rotation_type == "R":
+            self.cubeRotation("y", 0)
+            self.rotation(0)
+            self.cubeRotation("y", 1)
+        if rotation_type == "R'":
+            self.cubeRotation("y", 0)
+            self.rotation(1)
+            self.cubeRotation("y", 1)
+
+        if rotation_type == "F":
+            self.rotation(0)
+        if rotation_type == "F'":
+            self.rotation(1)
+
+        if rotation_type == "B":
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+        if rotation_type == "B'":
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+            self.rotation(1)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+
     # HELPER FUNCTIONS
     def printfaces(self):
         for face in self.faces:
