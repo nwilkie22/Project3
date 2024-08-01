@@ -61,8 +61,6 @@ class RubiksCube(pygame.sprite.Sprite):
         face = Face(self.xpos + self.size * 3, self.ypos + self.size * 3, self.size, color)
         self.faces.append(face)
 
-        self.faces[3].squares[0].recolor(RED)
-
     def recalculate_faces(self):
         # L -> B
         for i in range(4):
@@ -181,7 +179,12 @@ class RubiksCube(pygame.sprite.Sprite):
     def rotation(self, direction):
 
         current_face = self.faces[1]
-        self.faceRotate(current_face, 0)
+        if direction == 0:
+            self.faceRotate(current_face, 0)
+        elif direction == 1:
+            self.faceRotate(current_face, 1)
+        else:
+            raise ValueError("Invalid direction")
 
         side_face = self.faces[2]
         colors_to_move = [side_face.squares[0].color, side_face.squares[1].color, side_face.squares[2].color]
@@ -269,14 +272,14 @@ class RubiksCube(pygame.sprite.Sprite):
             self.rotation(1)
 
         if rotation_type == "B":
-            self.cubeRotation("x", 0)
-            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
             self.rotation(0)
             self.cubeRotation("x", 0)
             self.cubeRotation("x", 0)
         if rotation_type == "B'":
-            self.cubeRotation("x", 0)
-            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
             self.rotation(1)
             self.cubeRotation("x", 0)
             self.cubeRotation("x", 0)

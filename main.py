@@ -53,47 +53,39 @@ while active:
             if event.key == pygame.K_u:
                 if prime == False:
                     cube.faceTurn("U")
-                    print("pressed")
                 else:
                     cube.faceTurn("U'")
 
             if event.key == pygame.K_d:
                 if prime == False:
                     cube.faceTurn("D")
-                    print("pressed")
                 else:
                     cube.faceTurn("D'")
 
             if event.key == pygame.K_l:
                 if prime == False:
                     cube.faceTurn("L")
-                    print("pressed")
                 else:
                     cube.faceTurn("L'")
 
             if event.key == pygame.K_r:
                 if prime == False:
                     cube.faceTurn("R")
-                    print("pressed")
                 else:
                     cube.faceTurn("R'")
 
             if event.key == pygame.K_f:
                 if prime == False:
                     cube.faceTurn("F")
-                    print("pressed")
                 else:
                     cube.faceTurn("F'")
 
             # for debugging step by step
-            if event.key == pygame.K_1:
-                cube.cubeRotation("y", 1)
-
-            if event.key == pygame.K_2:
-                cube.rotation(0)
-
-            if event.key == pygame.K_3:
-                cube.cubeRotation("y", 0)
+            if event.key == pygame.K_b:
+                if prime == False:
+                    cube.faceTurn("B")
+                else:
+                    cube.faceTurn("B'")
 
 
 
