@@ -166,10 +166,10 @@ class RubiksCube(pygame.sprite.Sprite):
 
 
     def faceTurn(self, direction):
-        current_face = self.faces[1]  # Assuming this is the front face for this example
+        current_face = self.faces[1] 
 
         # Get the colors to move from the right face
-        side_face = self.faces[2]  # Assuming right face is affected first
+        side_face = self.faces[2]  
         colors_to_move = [side_face.squares[i].color for i in [0, 1, 2]]
 
         # Rotate the current face and determine the next face based on direction
