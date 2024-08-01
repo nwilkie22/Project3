@@ -44,7 +44,6 @@ while active:
                 cube.cubeRotation("x", 1)
                 cube.faceTurn(0)
                 cube.cubeRotation("x", 0)
-                cube.rotateSquares(cube.faces[0], 1)
     screen.fill(background_color)
     cube.draw(screen)
     algo1 = draw_button(screen, "Algorithm 1", 280, 600)

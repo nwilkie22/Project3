@@ -85,29 +85,33 @@ class RubiksCube(pygame.sprite.Sprite):
             face.drawFace(screen)
 
     def cubeRotation(self, rotation_type, direction):
-        if rotation_type == "x":  # Rotating around the x-axis
+        if rotation_type == "x":
             if direction == 0:  # X
                 new_order = [self.faces[0], self.faces[5], self.faces[2], self.faces[4],
-                             self.faces[1], self.faces[3]]
+                            self.faces[1], self.faces[3]]
             elif direction == 1:  # X'
                 new_order = [self.faces[0], self.faces[4], self.faces[2], self.faces[5],
-                             self.faces[3], self.faces[1]]
+                            self.faces[3], self.faces[1]]
             else:
                 raise ValueError("Invalid direction")
 
-        elif rotation_type == "y":  # Rotating around the y-axis
+        elif rotation_type == "y":
             if direction == 0:  # Y
-                new_order = [1, 2, 3, 0, 4, 5]
+                new_order = [self.faces[3], self.faces[0], self.faces[1], self.faces[2],
+                            self.faces[4], self.faces[5]]
             elif direction == 1:  # Y'
-                new_order = [3, 0, 1, 2, 4, 5]
+                new_order = [self.faces[1], self.faces[2], self.faces[3], self.faces[0],
+                            self.faces[4], self.faces[5]]
             else:
                 raise ValueError("Invalid direction.")
 
-        elif rotation_type == "z":  # Rotating around the z-axis
+        elif rotation_type == "z":
             if direction == 0:  # Z
-                new_order = [5, 1, 4, 3, 0, 2]
+                new_order = [self.faces[4], self.faces[1], self.faces[5], self.faces[3],
+                            self.faces[2], self.faces[0]]
             elif direction == 1:  # Z'
-                new_order = [4, 1, 5, 3, 2, 0]
+                new_order = [self.faces[5], self.faces[1], self.faces[4], self.faces[3],
+                            self.faces[0], self.faces[2]]
             else:
                 raise ValueError("Invalid direction.")
 
@@ -116,77 +120,102 @@ class RubiksCube(pygame.sprite.Sprite):
 
         self.faces = new_order
 
+        # Ensure that faces maintain the correct orientation of squares
+        if rotation_type == "x":
+            for face in [1, 3]:
+                self.rotateSquares(self.faces[face], 0)
+                self.rotateSquares(self.faces[face], 0)
+        elif rotation_type == "y":
+            for face in [4, 5]:
+                self.rotateSquares(self.faces[face], 0)
+                self.rotateSquares(self.faces[face], 0)
+        elif rotation_type == "z":
+            for face in [0, 2]:
+                self.rotateSquares(self.faces[face], 0)
+                self.rotateSquares(self.faces[face], 0)
+
         self.recalculate_faces()
 
+
+
     def squareSwap(self, colors_to_move, squares_to_move_to):
-        temp = [squares_to_move_to[0].color, squares_to_move_to[1].color, squares_to_move_to[2].color]
-        for i in range(3):
+        # Temporarily store the colors of the target squares
+        temp = [squares_to_move_to[i].color for i in range(len(squares_to_move_to))]
+        
+        # Move colors_to_move to squares_to_move_to
+        for i in range(len(squares_to_move_to)):
             squares_to_move_to[i].color = colors_to_move[i]
+        
         return temp
 
     def rotateSquares(self, face, direction):
-        # 0: clockwise 1: counter-clockwise
-        if direction == 0:
-            new_order = [face.squares[2], face.squares[5], face.squares[8], face.squares[1],
-                         face.squares[4], face.squares[7], face.squares[0], face.squares[3],
-                         face.squares[6]]
-        elif direction == 1:
+        if direction == 0:  # Clockwise
             new_order = [face.squares[6], face.squares[3], face.squares[0], face.squares[7],
-                         face.squares[4], face.squares[1], face.squares[8], face.squares[5],
-                         face.squares[2]]
+                        face.squares[4], face.squares[1], face.squares[8], face.squares[5],
+                        face.squares[2]]
+        elif direction == 1:  # Counter-clockwise
+            new_order = [face.squares[2], face.squares[5], face.squares[8], face.squares[1],
+                        face.squares[4], face.squares[7], face.squares[0], face.squares[3],
+                        face.squares[6]]
         else:
             raise ValueError("Invalid direction.")
-            
+        
         face.squares = new_order
-        self.recalculate_faces
+        face.recalculate_squares()
+
+
 
     def faceTurn(self, direction):
+        current_face = self.faces[1]  # Assuming this is the front face for this example
 
-        current_face = self.faces[1]
+        # Get the colors to move from the right face
+        side_face = self.faces[2]  # Assuming right face is affected first
+        colors_to_move = [side_face.squares[i].color for i in [0, 1, 2]]
 
-        side_face = self.faces[2]
-        colors_to_move = [side_face.squares[0].color, side_face.squares[1].color, side_face.squares[2].color]
-
-        # part 1
-        if direction == 0:
+        # Rotate the current face and determine the next face based on direction
+        if direction == 0:  # Clockwise
             self.rotateSquares(current_face, 0)
-            next_face = self.faces[5]
-        elif direction == 1:
-            next_face = self.faces[4]
+            next_face = self.faces[5]  # Down face
+        elif direction == 1:  # Counter-clockwise
+            next_face = self.faces[4]  # Up face
             self.rotateSquares(current_face, 1)
         else:
             raise ValueError("Invalid direction.")
 
+        # Move colors to the next face
         if direction == 0:
-            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
-        if direction == 1:
-            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
-        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-        # part 2
-        next_face = self.faces[0]
-        squares_to_move_to = [next_face.squares[6], next_face.squares[7], next_face.squares[8]]
-        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
-
-        # part 3
-        if direction == 0:
-            next_face = self.faces[4]
+            squares_to_move_to = [next_face.squares[i] for i in [0, 3, 6]]
         else:
-            next_face = self.faces[5]
-
-        if direction == 0:
-            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
-        if direction == 1:
-            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+            squares_to_move_to = [next_face.squares[i] for i in [2, 5, 8]]
         colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
 
-        # part 4
-        next_face = self.faces[2]
-        squares_to_move_to = [next_face.squares[0], next_face.squares[1], next_face.squares[2]]
+        # Move colors to the left face
+        next_face = self.faces[0]  # Left face
+        squares_to_move_to = [next_face.squares[i] for i in [6, 7, 8]]
+        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+        # Determine the next face based on direction
+        if direction == 0:
+            next_face = self.faces[4]  # Up face
+        else:
+            next_face = self.faces[5]  # Down face
+
+        if direction == 0:
+            squares_to_move_to = [next_face.squares[i] for i in [2, 5, 8]]
+        else:
+            squares_to_move_to = [next_face.squares[i] for i in [0, 3, 6]]
+        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+        # Final move to the right face
+        next_face = self.faces[2]  # Right face
+        squares_to_move_to = [next_face.squares[i] for i in [0, 1, 2]]
         self.squareSwap(colors_to_move, squares_to_move_to)
 
-        # ensure that colors are updated correctly
+        # Ensure all positions and colors are updated
         self.recalculate_faces()
+
+
+
 
     # def faceRotate(self, move):
         # if(move == "U"):
