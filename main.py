@@ -34,6 +34,11 @@ screen.fill(background_color)
 cube = RubiksCube(100, 100)
 print(cube.isSolved())
 
+algo1 = draw_button(screen, "Algorithm 1", 280, 600)
+algo2 = draw_button(screen, "Algorithm 2", 50, 600)
+scramble = draw_button(screen, "Scramble", 510, 600)
+
+
 active = True
 prime = False
 while active:
@@ -97,8 +102,12 @@ while active:
                 cube.faceTurn("M")
             if event.key == pygame.K_e:
                 cube.faceTurn("E")
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Buttons
+            mouse_x, mouse_y = event.pos
+            if scramble.collidepoint(mouse_x, mouse_y):
+                cube.scramble()
 
-            # Wide moves
 
     screen.fill(background_color)
     cube.draw(screen)

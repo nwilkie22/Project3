@@ -309,6 +309,12 @@ class RubiksCube(pygame.sprite.Sprite):
                     return False
         return True
 
+    def scramble(self):
+        possible_moves = ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
+        for i in range(500):
+            random_element = random.choice(possible_moves)
+            self.faceTurn(random_element)
+
 
 class Face(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size, initial_color):
