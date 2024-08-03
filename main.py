@@ -87,6 +87,28 @@ while active:
                 else:
                     cube.faceTurn("B'")
 
+            if event.key == pygame.K_x:
+                if prime == False:
+                    cube.cubeRotation("x", 0)
+                else:
+                    cube.cubeRotation("x", 1)
+            if event.key == pygame.K_y:
+                if prime == False:
+                    cube.cubeRotation("y", 0)
+                else:
+                    cube.cubeRotation("y", 1)
+            if event.key == pygame.K_z:
+                if prime == False:
+                    cube.cubeRotation("z", 0)
+                else:
+                    cube.cubeRotation("z'", 1)
+            if event.key == pygame.K_k:
+                if prime == False:
+                    cube.rotation(0)
+                else:
+                    cube.rotation(1)
+
+
             # Slice moves
             if event.key == pygame.K_s:
                 cube.faceTurn("S")
@@ -105,6 +127,8 @@ while active:
             mouse_x, mouse_y = event.pos
             if scramble.collidepoint(mouse_x, mouse_y):
                 cube.scramble()
+            if algo1.collidepoint(mouse_x, mouse_y):
+                cube.algo1()
 
     screen.fill(background_color)
     cube.draw(screen)
