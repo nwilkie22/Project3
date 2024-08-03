@@ -1,15 +1,16 @@
 # Rubiks Cube Project
 import pygame, sys
 
-
 from RubiksCube import RubiksCube
 
 pygame.font.init()
+
+
 def draw_button(screen, text, button_x, button_y):
     button_color = (255, 99, 71)
     text_color = (255, 255, 255)
     font = pygame.font.Font(None, 50)
-    button_width = len(text)*20
+    button_width = len(text) * 20
     button_height = 75
     button_surface = pygame.Surface((button_width, button_height))
     button_surface.fill(button_color)
@@ -22,6 +23,7 @@ def draw_button(screen, text, button_x, button_y):
     b = screen.blit(button_surface, (button_x, button_y))
     return b
 
+
 background_color = (255, 255, 255)
 
 screen = pygame.display.set_mode((800, 800))
@@ -29,7 +31,7 @@ pygame.display.set_caption('Rubiks Cube Solver')
 
 screen.fill(background_color)
 
-cube = RubiksCube(100,100)
+cube = RubiksCube(100, 100)
 print(cube.isSolved())
 
 active = True
@@ -90,17 +92,13 @@ while active:
 
             # Slice moves
             if event.key == pygame.K_s:
-                    cube.faceTurn("S")
+                cube.faceTurn("S")
             if event.key == pygame.K_m:
-                    cube.faceTurn("M")
+                cube.faceTurn("M")
             if event.key == pygame.K_e:
                 cube.faceTurn("E")
 
             # Wide moves
-            
-
-
-
 
     screen.fill(background_color)
     cube.draw(screen)
