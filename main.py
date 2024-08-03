@@ -1,119 +1,460 @@
-# Rubiks Cube Project
-import pygame, sys
+import pygame
+import kociemba
+import random
 
-from RubiksCube import RubiksCube
+# define colors
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
+ORANGE = (255, 128, 0)
+WHITE = (255, 255, 255)
+colorList = [YELLOW, WHITE, BLUE, RED, GREEN, ORANGE]
 
-pygame.font.init()
+# define adjacent faces
+adjacent_faces = {
+    0: [4, 1, 5, 3],  # Left face: Up, Front, Down, Back
+    1: [4, 0, 5, 2],  # Front face: Up, Left, Down, Right
+    2: [4, 3, 5, 1],  # Right face: Up, Back, Down, Front
+    3: [4, 2, 5, 0],  # Back face: Up, Right, Down, Left
+    4: [3, 2, 1, 0],  # Up face: Back, Right, Front, Left
+    5: [1, 2, 3, 0]  # Down face: Front, Right, Back, Left
+}
+
+# define face indices
+face_indices = {
+    "Left": 0,
+    "Front": 1,
+    "Right": 2,
+    "Back": 3,
+    "Up": 4,
+    "Down": 5
+}
+
+def kociemba_solver(cube):
+    # Convert the cube state to a string format that kociemba can solve
+    cube_state = cube.stringify()
+    solution = kociemba.solve(cube_state)
+    solution_steps = solution.split()
+    return solution_steps
+
+class RubiksCube(pygame.sprite.Sprite):
+    def __init__(self, xpos, ypos, size=30):
+        pygame.sprite.Sprite.__init__(self)
+        self.xpos = xpos
+        self.ypos = ypos
+        self.size = size
+        # stores all the face objects in this order
+        # "left", "front", "right", "back", "up", "down"
+        self.faces = []
+        self.init_faces()
+
+    def init_faces(self):
+        temp_color_list = colorList
+
+        # L -> B faces
+        for i in range(4):
+            color = temp_color_list.pop()
+            face = Face(self.xpos + i * self.size * 3, self.ypos, self.size, color)
+            self.faces.append(face)
+
+        # up face
+        color = temp_color_list.pop()
+        face = Face(self.xpos + self.size * 3, self.ypos - self.size * 3, self.size, color)
+        self.faces.append(face)
+
+        # down face
+        color = temp_color_list.pop()
+        face = Face(self.xpos + self.size * 3, self.ypos + self.size * 3, self.size, color)
+        self.faces.append(face)
+
+    def recalculate_faces(self):
+        # L -> B
+        for i in range(4):
+            self.faces[i].xpos = self.xpos + i * self.size * 3
+            self.faces[i].ypos = self.ypos
+
+        # up
+        self.faces[4].xpos = self.xpos + self.size * 3
+        self.faces[4].ypos = self.ypos - self.size * 3
+
+        # down
+        self.faces[5].xpos = self.xpos + self.size * 3
+        self.faces[5].ypos = self.ypos + self.size * 3
+
+        for face in self.faces:
+            face.recalculate_squares()
+
+    def draw(self, screen):
+        for face in self.faces:
+            face.drawFace(screen)
+
+    def cubeRotation(self, rotation_type, direction):
+        # does not move any squares in relation to each other
+        # just changes which face is at the front
+        # 3 rotation types: x: R direction, y: U direction, and z: F direction
+        # 2 directions: 0: Normal Direction, 1: Prime Direction
+        # initial order: 0, 1, 2, 3, 4, 5
+
+        # rotation types
+        if rotation_type == "x":  # Rotating around the x-axis
+            if direction == 0:  # X
+                new_order = [0, 5, 2, 4, 1, 3]
+            elif direction == 1:  # X'
+                new_order = [0, 4, 2, 5, 3, 1]
+            else:
+                raise ValueError("Invalid direction")
+
+        elif rotation_type == "y":  # Rotating around the y-axis
+            if direction == 0:  # Y
+                new_order = [1, 2, 3, 0, 4, 5]
+            elif direction == 1:  # Y'
+                new_order = [3, 0, 1, 2, 4, 5]
+            else:
+                raise ValueError("Invalid direction.")
+
+        elif rotation_type == "z":  # Rotating around the z-axis
+            if direction == 0:  # Z
+                new_order = [5, 1, 4, 3, 0, 2]
+            elif direction == 1:  # Z'
+                new_order = [4, 1, 5, 3, 2, 0]
+            else:
+                raise ValueError("Invalid direction.")
+
+        else:
+            raise ValueError("Invalid rotation type.")
+
+        # reorder the "faces" array to reflect the rotation
+        new_faces = []
+        for num in new_order:
+            new_faces.append(self.faces[num])
+        self.faces = new_faces
+
+        if rotation_type == "x":
+            if direction == 0:
+                rotations = [(0, 1), (2, 0), (3, 1), (3, 1), (5, 1), (5, 1)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+            if direction == 1:
+                rotations = [(0, 0), (2, 1), (3, 1), (3, 1), (4, 1), (4, 1)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+        if rotation_type == "y":
+            if direction == 0:
+                rotations = [(2, 1), (2, 1), (3, 1), (3, 1), (4, 0), (5, 1)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+            if direction == 1:
+                rotations = [(0, 1), (0, 1), (3, 1), (3, 1), (4, 1), (5, 0)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+
+        if rotation_type == "z":
+            if direction == 0:
+                rotations = [(0, 1), (2, 0), (4, 0), (5, 0)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+            if direction == 1:
+                rotations = [(0, 1), (2, 1), (4, 1), (5, 1)]
+                for current_face, orientation in rotations:
+                    self.faceRotate(self.faces[current_face], orientation)
+
+        self.recalculate_faces()
+
+    def squareSwap(self, colors_to_move, squares_to_move_to):
+        temp = [squares_to_move_to[0].color, squares_to_move_to[1].color, squares_to_move_to[2].color]
+        for i in range(3):
+            squares_to_move_to[i].color = colors_to_move[i]
+        return temp
+
+    def faceRotate(self, face, direction):
+        # 0: clockwise 1: counter-clockwise
+        if direction == 0:
+            new_order = [2, 5, 8, 1, 4, 7, 0, 3, 6]
+        elif direction == 1:
+            new_order = [6, 3, 0, 7, 4, 1, 8, 5, 2]
+        else:
+            raise ValueError("Invalid direction.")
+
+        new_squares = []
+
+        for num in new_order:
+            new_squares.append(face.squares[num])
+
+        face.squares = new_squares
+
+    def rotation(self, direction):
+
+        current_face = self.faces[1]
+        if direction == 0:
+            self.faceRotate(current_face, 0)
+        elif direction == 1:
+            self.faceRotate(current_face, 1)
+        else:
+            raise ValueError("Invalid direction")
+
+        side_face = self.faces[2]
+        colors_to_move = [side_face.squares[0].color, side_face.squares[1].color, side_face.squares[2].color]
+
+        # part 1
+        if direction == 0:
+            next_face = self.faces[5]
+        elif direction == 1:
+            next_face = self.faces[4]
+        else:
+            raise ValueError("Invalid direction.")
+
+        if direction == 0:
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+        if direction == 1:
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+
+        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+        # part 2
+        next_face = self.faces[0]
+        squares_to_move_to = [next_face.squares[6], next_face.squares[7], next_face.squares[8]]
+        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+        # part 3
+        if direction == 0:
+            next_face = self.faces[4]
+        else:
+            next_face = self.faces[5]
+
+        if direction == 0:
+            squares_to_move_to = [next_face.squares[2], next_face.squares[5], next_face.squares[8]]
+        if direction == 1:
+            squares_to_move_to = [next_face.squares[0], next_face.squares[3], next_face.squares[6]]
+
+        colors_to_move = self.squareSwap(colors_to_move, squares_to_move_to)
+
+        # part 4
+        next_face = self.faces[2]
+        squares_to_move_to = [next_face.squares[0], next_face.squares[1], next_face.squares[2]]
+        self.squareSwap(colors_to_move, squares_to_move_to)
+
+        self.recalculate_faces()
+
+    def faceTurn(self, rotation_type):
+        if rotation_type == "U":
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
+        elif rotation_type == "U'":
+            self.cubeRotation("x", 1)
+            self.rotation(1)
+            self.cubeRotation("x", 0)
+        elif rotation_type == "U2":
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
+
+        elif rotation_type == "D":
+            self.cubeRotation("x", 0)
+            self.rotation(0)
+            self.cubeRotation("x", 1)
+        elif rotation_type == "D'":
+            self.cubeRotation("x", 0)
+            self.rotation(1)
+            self.cubeRotation("x", 1)
+        elif rotation_type == "D2":
+            self.cubeRotation("x", 0)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("x", 1)
+
+        elif rotation_type == "L":
+            self.cubeRotation("y", 1)
+            self.rotation(0)
+            self.cubeRotation("y", 0)
+        elif rotation_type == "L'":
+            self.cubeRotation("y", 1)
+            self.rotation(1)
+            self.cubeRotation("y", 0)
+        elif rotation_type == "L2":
+            self.cubeRotation("y", 1)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("y", 0)
+
+        elif rotation_type == "R":
+            self.cubeRotation("y", 0)
+            self.rotation(0)
+            self.cubeRotation("y", 1)
+        elif rotation_type == "R'":
+            self.cubeRotation("y", 0)
+            self.rotation(1)
+            self.cubeRotation("y", 1)
+        elif rotation_type == "R2":
+            self.cubeRotation("y", 0)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("y", 1)
+
+        elif rotation_type == "F":
+            self.rotation(0)
+        elif rotation_type == "F'":
+            self.rotation(1)
+        elif rotation_type == "F2":
+            self.rotation(0)
+            self.rotation(0)
+        elif rotation_type == "B":
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+        elif rotation_type == "B'":
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
+            self.rotation(1)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+        elif rotation_type == "B2":
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+        if rotation_type == "S":
+            self.faceTurn("F'")
+            self.faceTurn("B")
+            self.cubeRotation("z", 0)
+        if rotation_type == "M":
+            self.faceTurn("L'")
+            self.faceTurn("R")
+            self.cubeRotation("x", 1)
+        if rotation_type == "E":
+            self.faceTurn("D'")
+            self.faceTurn("U")
+            self.cubeRotation("y", 1)
+
+    # HELPER FUNCTIONS
+    def printfaces(self):
+        for face in self.faces:
+            print(face.squares[0].color)
+
+    def isSolved(self):
+        for face in self.faces:
+            for square in face.squares:
+                test_color = face.squares[0].color
+                if square.color != test_color:
+                    return False
+        return True
+
+    def scramble(self):
+        possible_moves = ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
+        for i in range(500):
+            random_element = random.choice(possible_moves)
+            self.faceTurn(random_element)
+
+    def stringify(self):
+        face_order = [1, 0, 4, 3, 2, 5]
+        #[4,2,1,5,0,3]
+        position_order = [
+            # Up
+            (4, 0), (4, 3), (4, 6),
+            (4, 1), (4, 4), (4, 7),
+            (4, 2), (4, 5), (4, 8),
+            # Left
+            (2, 0), (2, 3), (2, 6),
+            (2, 1), (2, 4), (2, 7),
+            (2, 2), (2, 5), (2, 8),
+            # Front
+            (1, 0), (1, 3), (1, 6),
+            (1, 1), (1, 4), (1, 7),
+            (1, 2), (1, 5), (1, 8),
+            # Right
+            (5, 0), (5, 3), (5, 6),
+            (5, 1), (5, 4), (5, 7),
+            (5, 2), (5, 5), (5, 8),
+            # Back
+            (0, 0), (0, 3), (0, 6),
+            (0, 1), (0, 4), (0, 7),
+            (0, 2), (0, 5), (0, 8),
+            # Down
+            (3, 0), (3, 3), (3, 6),
+            (3, 1), (3, 4), (3, 7),
+            (3, 2), (3, 5), (3, 8),
+        ]
+        color_map = {
+            (0, 255, 0): "F",  # Green
+            (0, 0, 255): "B",  # Blue
+            (255, 255, 0): "D",  # Yellow
+            (255, 0, 0): "R",  # Red
+            (255, 128, 0): "L",  # Orange
+            (255, 255, 255): "U"  # White
+        }
+        cube = ""
+        for face_idx, square_idx in position_order:
+            face = self.faces[face_idx]
+            square = face.squares[square_idx]
+            cube += color_map[square.color]
+        return cube
+
+    def solve_cube(self, screen):
+        solution_steps = kociemba_solver(self)
+        for step in solution_steps:
+            print(step)
+            self.faceTurn(step)
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(500)
 
 
-def draw_button(screen, text, button_x, button_y):
-    button_color = (255, 99, 71)
-    text_color = (255, 255, 255)
-    font = pygame.font.Font(None, 50)
-    button_width = len(text) * 20
-    button_height = 75
-    button_surface = pygame.Surface((button_width, button_height))
-    button_surface.fill(button_color)
-    text_surface = font.render(text, True, text_color)
-    text_x = (button_width - text_surface.get_width()) // 2
-    text_y = (button_height - text_surface.get_height()) // 2
-    # Blit the text surface onto the button surface
-    button_surface.blit(text_surface, (text_x, text_y))
-    button_surface.blit(text_surface, (100, 100))
-    b = screen.blit(button_surface, (button_x, button_y))
-    return b
+class Face(pygame.sprite.Sprite):
+    def __init__(self, xpos, ypos, size, initial_color):
+        pygame.sprite.Sprite.__init__(self)
+        self.xpos = xpos
+        self.ypos = ypos
+        self.size = size
+        self.initial_color = initial_color
+        self.squares = []
+        self.init_squares()
+
+    def init_squares(self):
+        color = self.initial_color
+        for i in range(3):
+            for j in range(3):
+                # square creation
+                square = Square(self.xpos + j * self.size, self.ypos + i * self.size, self.size, self.initial_color)
+                self.squares.append(square)
+
+    def recalculate_squares(self):
+        count = 0
+        for square in self.squares:
+            square.xpos = self.xpos + (count // 3) * self.size
+            square.ypos = self.ypos + (count % 3) * self.size
+            count += 1
+
+    # draws a 3x3 face
+    def drawFace(self, screen):
+        top_left_x = self.squares[0].xpos
+        top_left_y = self.squares[0].ypos
+
+        for square in self.squares:
+            square.drawSquare(screen)
+
+        # draw the outline
+        big_rect = pygame.Rect(top_left_x, top_left_y, self.size * 3, self.size * 3)
+        pygame.draw.rect(screen, (0, 0, 0), big_rect, 2)
 
 
-background_color = (255, 255, 255)
+class Square(pygame.sprite.Sprite):
+    def __init__(self, xpos, ypos, size, color):
+        pygame.sprite.Sprite.__init__(self)
+        self.xpos = xpos
+        self.ypos = ypos
+        self.size = size
+        self.color = color
 
-screen = pygame.display.set_mode((800, 800))
-pygame.display.set_caption('Rubiks Cube Solver')
+    def drawSquare(self, screen):
+        rect = pygame.Rect(self.xpos, self.ypos, self.size, self.size)
+        pygame.draw.rect(screen, self.color, rect)
+        pygame.draw.rect(screen, (0, 0, 0), rect, 1)
 
-screen.fill(background_color)
-
-cube = RubiksCube(100, 100)
-print(cube.isSolved())
-
-algo1 = draw_button(screen, "Algorithm 1", 280, 600)
-algo2 = draw_button(screen, "Algorithm 2", 50, 600)
-scramble = draw_button(screen, "Scramble", 510, 600)
-
-
-active = True
-prime = False
-while active:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            active = False
-
-        # temp code for testing rotations
-        # Press key for rotation, press space to switch from prime to not prime
-        if event.type == pygame.KEYDOWN:
-
-            # Prime toggle
-            if event.key == pygame.K_SPACE:
-                prime = not prime
-                if prime:
-                    print("Prime")
-                else:
-                    print("Not Prime")
-
-            # Basic moves
-            if event.key == pygame.K_u:
-                if prime == False:
-                    cube.faceTurn("U")
-                else:
-                    cube.faceTurn("U'")
-
-            if event.key == pygame.K_d:
-                if prime == False:
-                    cube.faceTurn("D")
-                else:
-                    cube.faceTurn("D'")
-
-            if event.key == pygame.K_l:
-                if prime == False:
-                    cube.faceTurn("L")
-                else:
-                    cube.faceTurn("L'")
-
-            if event.key == pygame.K_r:
-                if prime == False:
-                    cube.faceTurn("R")
-                else:
-                    cube.faceTurn("R'")
-
-            if event.key == pygame.K_f:
-                if prime == False:
-                    cube.faceTurn("F")
-                else:
-                    cube.faceTurn("F'")
-
-            if event.key == pygame.K_b:
-                if prime == False:
-                    cube.faceTurn("B")
-                else:
-                    cube.faceTurn("B'")
-
-            # Slice moves
-            if event.key == pygame.K_s:
-                cube.faceTurn("S")
-            if event.key == pygame.K_m:
-                cube.faceTurn("M")
-            if event.key == pygame.K_e:
-                cube.faceTurn("E")
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Buttons
-            mouse_x, mouse_y = event.pos
-            if scramble.collidepoint(mouse_x, mouse_y):
-                cube.scramble()
-
-
-    screen.fill(background_color)
-    cube.draw(screen)
-    algo1 = draw_button(screen, "Algorithm 1", 280, 600)
-    algo2 = draw_button(screen, "Algorithm 2", 50, 600)
-    scramble = draw_button(screen, "Scramble", 510, 600)
-    pygame.display.flip()
-
-pygame.quit()
+    def recolor(self, color):
+        self.color = color
