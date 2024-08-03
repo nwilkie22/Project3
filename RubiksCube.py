@@ -1,4 +1,5 @@
 import pygame
+import kociemba
 import random
 
 # define colors
@@ -8,7 +9,7 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 ORANGE = (255, 128, 0)
 WHITE = (255, 255, 255)
-colorList = [BLUE, GREEN, YELLOW, ORANGE, WHITE, RED]
+colorList = [YELLOW, WHITE, BLUE, RED, GREEN, ORANGE]
 
 # define adjacent faces
 adjacent_faces = {
@@ -30,6 +31,12 @@ face_indices = {
     "Down": 5
 }
 
+def kociemba_solver(cube):
+    # Convert the cube state to a string format that kociemba can solve
+    cube_state = cube.stringify()
+    solution = kociemba.solve(cube_state)
+    solution_steps = solution.split()
+    return solution_steps
 
 class RubiksCube(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size=30):
@@ -234,53 +241,82 @@ class RubiksCube(pygame.sprite.Sprite):
             self.cubeRotation("x", 1)
             self.rotation(0)
             self.cubeRotation("x", 0)
-        if rotation_type == "U'":
+        elif rotation_type == "U'":
             self.cubeRotation("x", 1)
             self.rotation(1)
             self.cubeRotation("x", 0)
+        elif rotation_type == "U2":
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("x", 0)
 
-        if rotation_type == "D":
+        elif rotation_type == "D":
             self.cubeRotation("x", 0)
             self.rotation(0)
             self.cubeRotation("x", 1)
-        if rotation_type == "D'":
+        elif rotation_type == "D'":
             self.cubeRotation("x", 0)
             self.rotation(1)
             self.cubeRotation("x", 1)
+        elif rotation_type == "D2":
+            self.cubeRotation("x", 0)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("x", 1)
 
-        if rotation_type == "L":
+        elif rotation_type == "L":
             self.cubeRotation("y", 1)
             self.rotation(0)
             self.cubeRotation("y", 0)
-        if rotation_type == "L'":
+        elif rotation_type == "L'":
             self.cubeRotation("y", 1)
             self.rotation(1)
             self.cubeRotation("y", 0)
+        elif rotation_type == "L2":
+            self.cubeRotation("y", 1)
+            self.rotation(0)
+            self.rotation(0)
+            self.cubeRotation("y", 0)
 
-        if rotation_type == "R":
+        elif rotation_type == "R":
             self.cubeRotation("y", 0)
             self.rotation(0)
             self.cubeRotation("y", 1)
-        if rotation_type == "R'":
+        elif rotation_type == "R'":
             self.cubeRotation("y", 0)
             self.rotation(1)
             self.cubeRotation("y", 1)
-
-        if rotation_type == "F":
+        elif rotation_type == "R2":
+            self.cubeRotation("y", 0)
             self.rotation(0)
-        if rotation_type == "F'":
-            self.rotation(1)
+            self.rotation(0)
+            self.cubeRotation("y", 1)
 
-        if rotation_type == "B":
+        elif rotation_type == "F":
+            self.rotation(0)
+        elif rotation_type == "F'":
+            self.rotation(1)
+        elif rotation_type == "F2":
+            self.rotation(0)
+            self.rotation(0)
+        elif rotation_type == "B":
             self.cubeRotation("x", 1)
             self.cubeRotation("x", 1)
             self.rotation(0)
             self.cubeRotation("x", 0)
             self.cubeRotation("x", 0)
-        if rotation_type == "B'":
+        elif rotation_type == "B'":
             self.cubeRotation("x", 1)
             self.cubeRotation("x", 1)
             self.rotation(1)
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
+        elif rotation_type == "B2":
+            self.cubeRotation("x", 1)
+            self.cubeRotation("x", 1)
+            self.rotation(0)
+            self.rotation(0)
             self.cubeRotation("x", 0)
             self.cubeRotation("x", 0)
         if rotation_type == "S":
@@ -314,6 +350,59 @@ class RubiksCube(pygame.sprite.Sprite):
         for i in range(500):
             random_element = random.choice(possible_moves)
             self.faceTurn(random_element)
+
+    def stringify(self):
+        face_order = [1, 0, 4, 3, 2, 5]
+        #[4,2,1,5,0,3]
+        position_order = [
+            # Up
+            (4, 0), (4, 3), (4, 6),
+            (4, 1), (4, 4), (4, 7),
+            (4, 2), (4, 5), (4, 8),
+            # Left
+            (2, 0), (2, 3), (2, 6),
+            (2, 1), (2, 4), (2, 7),
+            (2, 2), (2, 5), (2, 8),
+            # Front
+            (1, 0), (1, 3), (1, 6),
+            (1, 1), (1, 4), (1, 7),
+            (1, 2), (1, 5), (1, 8),
+            # Right
+            (5, 0), (5, 3), (5, 6),
+            (5, 1), (5, 4), (5, 7),
+            (5, 2), (5, 5), (5, 8),
+            # Back
+            (0, 0), (0, 3), (0, 6),
+            (0, 1), (0, 4), (0, 7),
+            (0, 2), (0, 5), (0, 8),
+            # Down
+            (3, 0), (3, 3), (3, 6),
+            (3, 1), (3, 4), (3, 7),
+            (3, 2), (3, 5), (3, 8),
+        ]
+        color_map = {
+            (0, 255, 0): "F",  # Green
+            (0, 0, 255): "B",  # Blue
+            (255, 255, 0): "D",  # Yellow
+            (255, 0, 0): "R",  # Red
+            (255, 128, 0): "L",  # Orange
+            (255, 255, 255): "U"  # White
+        }
+        cube = ""
+        for face_idx, square_idx in position_order:
+            face = self.faces[face_idx]
+            square = face.squares[square_idx]
+            cube += color_map[square.color]
+        return cube
+
+    def solve_cube(self, screen):
+        solution_steps = kociemba_solver(self)
+        for step in solution_steps:
+            print(step)
+            self.faceTurn(step)
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(500)
 
 
 class Face(pygame.sprite.Sprite):
