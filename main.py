@@ -107,7 +107,8 @@ while active:
                     cube.rotation(0)
                 else:
                     cube.rotation(1)
-
+            if event.key == pygame.K_o:
+                cube.percentSolved()
 
             # Slice moves
             if event.key == pygame.K_s:

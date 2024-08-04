@@ -32,6 +32,21 @@ face_indices = {
     "Down": 5
 }
 
+MOVE_REVERSALS = {
+        "U": "U'",
+        "U'": "U",
+        "D": "D'",
+        "D'": "D",
+        "L": "L'",
+        "L'": "L",
+        "R": "R'",
+        "R'": "R",
+        "F": "F'",
+        "F'": "F",
+        "B": "B'",
+        "B'": "B",
+    }
+
 def kociemba_solver(cube):
     # Convert the cube state to a string format that kociemba can solve
     cube_state = cube.stringify()
@@ -271,6 +286,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.cubeRotation("x", 1)
             self.rotation(0)
             self.cubeRotation("x", 0)
+
         elif rotation_type == "U'":
             self.cubeRotation("x", 1)
             self.rotation(1)
@@ -431,6 +447,80 @@ class RubiksCube(pygame.sprite.Sprite):
             self.draw(screen)
             pygame.display.flip()
             pygame.time.wait(500)
+
+    def percentSolved(self):
+        total = 0.0
+
+        for face in self.faces:
+            middle_color = face.squares[4].color
+            unsolved_count = sum(1 for square in face.squares if square.color != middle_color)
+            face_percentage = unsolved_count / 9
+            total += face_percentage
+
+        average_percentage = total / 9
+        return 1 - average_percentage
+
+    def reverse_move(self, move):
+        result = MOVE_REVERSALS[move]
+        return result
+
+    def generate_random_sequence(self, length):
+        possible_moves = ["U", "D", "L", "R", "F", "B", "U'", "D'", "L'", "R'", "F'", "B'"]
+        return [random.choice(possible_moves) for _ in range(length)]
+
+    def sequence(self, sequence):
+        for move in sequence:
+            self.faceTurn(move)
+
+    def reverse_sequence(self, sequence):
+        # Apply the moves in reverse order to undo the sequence
+        for move in reversed(sequence):
+            self.faceTurn(self.reverse_move(move))
+
+    def algo1(self):
+        percent_solved = self.percentSolved()
+        count = 1
+        max_attempts = 10000  # max attempt number
+
+        while percent_solved < 1.0:
+            time.sleep(1)
+            print("Round: " + str(count) + " percent_solved: " + str(percent_solved))
+
+            attempt_count = 0
+            best_percent = percent_solved
+            best_sequence = None
+
+            while attempt_count < max_attempts:
+                # max random sequence length
+                sequence_length = random.randint(1, 20)
+                sequence = self.generate_random_sequence(sequence_length)
+
+                self.sequence(sequence)
+                new_percent = self.percentSolved()
+
+                if new_percent > best_percent:
+                    best_percent = new_percent
+                    best_sequence = sequence
+
+                self.sequence(sequence)
+
+                attempt_count += 1
+
+            if best_sequence:
+                # Apply the best sequence found
+                self.sequence(best_sequence)
+                percent_solved = best_percent
+                print("Best sequence applied with improved percent_solved: " + str(percent_solved))
+            else:
+                print("No improvement found in this round.")
+                break
+            count += 1
+
+        if percent_solved >= 1.0:
+            print("Solved")
+        else:
+            print("Failed")
+
 
 class Face(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size, initial_color):
