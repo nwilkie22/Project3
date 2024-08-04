@@ -378,6 +378,8 @@ class RubiksCube(pygame.sprite.Sprite):
             self.faceTurn("U")
             self.cubeRotation("y", 1)
 
+        return rotation_type
+
     # HELPER FUNCTIONS
     def printfaces(self):
         for face in self.faces:
