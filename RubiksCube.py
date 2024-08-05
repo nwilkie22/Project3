@@ -389,7 +389,6 @@ class RubiksCube(pygame.sprite.Sprite):
     def printfaces(self):
         for face in self.faces:
             print(face.squares[0].color)
-
     def isSolved(self):
         for face in self.faces:
             for square in face.squares:
@@ -397,13 +396,11 @@ class RubiksCube(pygame.sprite.Sprite):
                 if square.color != test_color:
                     return False
         return True
-
     def scramble(self):
         possible_moves = ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
         for i in range(random.randint(200, 500)):
             random_element = random.choice(possible_moves)
             self.faceTurn(random_element)
-
     def stringify(self):
         position_order = [
             # Up
@@ -445,7 +442,6 @@ class RubiksCube(pygame.sprite.Sprite):
             square = face.squares[square_idx]
             cube += color_map[square.color]
         return cube
-
     def solve_cube(self, screen):
         solution_steps = kociemba_solver(self)
         for step in solution_steps:
@@ -456,7 +452,6 @@ class RubiksCube(pygame.sprite.Sprite):
             pygame.time.wait(500)
             if (self.stringify() == "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB"):
                 break
-
     def percentSolved(self):
         total = 0.0
 
@@ -468,7 +463,6 @@ class RubiksCube(pygame.sprite.Sprite):
 
         average_percentage = total / 9
         return 1 - average_percentage
-
     def whiteCross(self):
         count = 0.0
         arr = [1, 3, 5, 7]
@@ -484,46 +478,15 @@ class RubiksCube(pygame.sprite.Sprite):
         if self.faces[3].squares[3].color == BLUE:
             count += 1.0
         return count / 8
-
-    def whiteCorners(self):
-        count = 0.0
-        if self.faces[0].squares[0].color == ORANGE:
-            count += 1.0
-        if self.faces[0].squares[6].color == ORANGE:
-            count += 1.0
-        if self.faces[1].squares[0].color == GREEN:
-            count += 1.0
-        if self.faces[1].squares[6].color == GREEN:
-            count += 1.0
-        if self.faces[2].squares[0].color == RED:
-            count += 1.0
-        if self.faces[2].squares[6].color == RED:
-            count += 1.0
-        if self.faces[3].squares[0].color == BLUE:
-            count += 1.0
-        if self.faces[3].squares[6].color == BLUE:
-            count += 1.0
-        arr = [2, 4, 6, 8]
-        for i in arr:
-            if self.faces[4].squares[i].color == WHITE:
-                count += 1.0
-        if self.whiteCross != 1.0:
-            return 0
-        else:
-            return count / 9
-
     def reverse_move(self, move):
         result = MOVE_REVERSALS[move]
         return result
-
     def generate_random_sequence(self, length):
         possible_moves = ["U", "D", "L", "R", "F", "B", "U'", "D'", "L'", "R'", "F'", "B'"]
         return [random.choice(possible_moves) for _ in range(length)]
-
     def sequence(self, sequence):
         for move in sequence:
             self.faceTurn(move)
-
     def best_sequence(self, sequence, screen):
         for move in sequence:
             self.draw(screen)
@@ -536,7 +499,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.faceTurn(self.reverse_move(move))
 
     def algo1(self, screen):
-        self.solve_white_cross(screen)
+        self.solve_white_corners()
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -582,14 +545,57 @@ class RubiksCube(pygame.sprite.Sprite):
             print("Solved")
         else:
             print("Failed")
-        white_corners = {0, 2, 6, 8}
-
 
     def solve_white_corners(self):
         cube_state = self.stringify()
+        white_corners = {0, 2, 6, 8}
         for corner in white_corners:
-            if cube_state[corner] == "U" and not cube_state[36] == "L" or not cube_state[45] == "B":
-                print()
+            while corner == 0:
+                if cube_state[0] == "U":
+                    if cube_state[36] != "L":
+                        self.faceTurn("B")
+                        self.faceTurn("D")
+                        self.faceTurn("B'")
+                        self.faceTurn("D'")
+                        cube_state = self.stringify()
+                        print(cube_state)
+                        print("Wrong Corner")
+                    else:
+                        print("Solved")
+                        break
+                else:
+                    if (cube_state[36] == "U" and cube_state[47] == "L") or (cube_state[47] == "U" and cube_state[0] == "L"):
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                        self.faceTurn("R'")
+                        self.faceTurn("D")
+                        self.faceTurn("R")
+                        self.faceTurn("D'")
+                        self.faceTurn("R'")
+                        self.faceTurn("D")
+                        self.faceTurn("R")
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                        cube_state = self.stringify()
+                        print("Rotate Corner")
+                    else:
+                        if (cube_state[33] == "U" and cube_state[53] == "L") or (cube_state[42] == "U" and cube_state[33] == "L") or (cube_state[53] == "U" and cube_state[42] == "L"):
+                            self.cubeRotation("y", 0)
+                            self.cubeRotation("y", 0)
+                            self.faceTurn("R'")
+                            self.faceTurn("D'")
+                            self.faceTurn("R")
+                            self.faceTurn("D")
+                            self.cubeRotation("y", 0)
+                            self.cubeRotation("y", 0)
+                            cube_state = self.stringify()
+                            print("Place Corner")
+                        else:
+                            self.faceTurn("D")
+                            cube_state = self.stringify()
+                            print("Find Corner")
+        
+
                 
 
 
