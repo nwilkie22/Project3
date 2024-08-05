@@ -513,7 +513,7 @@ class RubiksCube(pygame.sprite.Sprite):
 
     def algo1(self, screen):
         self.solve_white_cross(screen)
-        #self.solve_white_corners(screen)
+        self.solve_white_corners(screen)
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -590,12 +590,13 @@ class RubiksCube(pygame.sprite.Sprite):
             self.faceTurn("R")
             update_cube()
 
+        '''
         for _ in range(4):
             if self.faces[1].squares[0].color != self.faces[1].squares[3].color:
                 wrong_position_alg()
             self.cubeRotation("y", 0)
-
         '''
+
         count = 0
         count2 = 0
         while (self.faces[4].squares[0].color != WHITE or self.faces[4].squares[2].color != WHITE or
@@ -623,11 +624,60 @@ class RubiksCube(pygame.sprite.Sprite):
                 self.cubeRotation("y",0)
                 count = 0
             update_cube()
-            '''
 
-
-
-
+        # lances code in case this ends up being better
+        '''
+        cube_state = self.stringify()
+        white_corners = {0, 2, 6, 8}
+        for corner in white_corners:
+            if cube_state[corner] == "U" and not cube_state[36] == "L" or not cube_state[45] == "B":
+                print()
+            while corner == 0:
+                if cube_state[0] == "U":
+                    if cube_state[36] != "L":
+                        self.faceTurn("B")
+                        self.faceTurn("D")
+                        self.faceTurn("B'")
+                        self.faceTurn("D'")
+                        cube_state = self.stringify()
+                        print(cube_state)
+                        print("Wrong Corner")
+                    else:
+                        print("Solved")
+                        break
+                else:
+                    if (cube_state[36] == "U" and cube_state[47] == "L") or (cube_state[47] == "U" and cube_state[0] == "L"):
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                        self.faceTurn("R'")
+                        self.faceTurn("D")
+                        self.faceTurn("R")
+                        self.faceTurn("D'")
+                        self.faceTurn("R'")
+                        self.faceTurn("D")
+                        self.faceTurn("R")
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                        cube_state = self.stringify()
+                        print("Rotate Corner")
+                    else:
+                        if (cube_state[33] == "U" and cube_state[53] == "L") or (cube_state[42] == "U" and cube_state[33] == "L") or (cube_state[53] == "U" and cube_state[42] == "L"):
+                            self.cubeRotation("y", 0)
+                            self.cubeRotation("y", 0)
+                            self.faceTurn("R'")
+                            self.faceTurn("D'")
+                            self.faceTurn("R")
+                            self.faceTurn("D")
+                            self.cubeRotation("y", 0)
+                            self.cubeRotation("y", 0)
+                            cube_state = self.stringify()
+                            print("Place Corner")
+                        else:
+                            self.faceTurn("D")
+                            cube_state = self.stringify()
+                            print("Find Corner")
+  
+        '''
 
 class Face(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size, initial_color):
