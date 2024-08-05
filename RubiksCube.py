@@ -449,6 +449,8 @@ class RubiksCube(pygame.sprite.Sprite):
             self.draw(screen)
             pygame.display.flip()
             pygame.time.wait(500)
+            if(self.stringify() == "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB"):
+                break
 
     def percentSolved(self):
         total = 0.0

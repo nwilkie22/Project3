@@ -150,7 +150,7 @@ while active:
                 print(cube.solve_cube(screen))
             check = cube.stringify()
             print(check)
-
+            # Wide moves
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Buttons
             mouse_x, mouse_y = event.pos
