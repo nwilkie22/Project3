@@ -564,7 +564,7 @@ class RubiksCube(pygame.sprite.Sprite):
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
-            pygame.time.wait(500)
+            pygame.time.wait(100)
 
         def corner_alg():
             self.faceTurn("R'")
@@ -576,56 +576,140 @@ class RubiksCube(pygame.sprite.Sprite):
             self.faceTurn("D")
             update_cube()
 
-        def wrong_position_alg():
-            self.faceTurn("L")
-            update_cube()
-            self.faceTurn("D")
-            update_cube()
-            self.faceTurn("L'")
+        def corner_fix_alg():
+            self.faceTurn("D'")
             update_cube()
             self.faceTurn("R'")
             update_cube()
-            self.faceTurn("D'")
+            self.faceTurn("D")
             update_cube()
             self.faceTurn("R")
             update_cube()
 
-        '''
-        for _ in range(4):
-            if self.faces[1].squares[0].color != self.faces[1].squares[3].color:
-                wrong_position_alg()
-            self.cubeRotation("y", 0)
-        '''
 
-        count = 0
-        count2 = 0
-        while (self.faces[4].squares[0].color != WHITE or self.faces[4].squares[2].color != WHITE or
-               self.faces[4].squares[6].color != WHITE or self.faces[4].squares[8].color != WHITE):
-            while(self.faces[4].squares[8].color == WHITE and count2 < 4):
-                self.cubeRotation("y",0)
-                update_cube()
-                count2 += 1
+        def white_face_create():
+            print("Moving White Squares to the Top")
+            count = 0
             count2 = 0
-            if self.faces[2].squares[2].color == WHITE:
-                if self.faces[4].squares[8].color != WHITE:
-                    corner_alg()
-            if self.faces[5].squares[6].color == WHITE:
-                if self.faces[4].squares[8].color != WHITE:
-                    for _ in range(3):
+            count3 = 0
+            while (self.faces[4].squares[0].color != WHITE or self.faces[4].squares[2].color != WHITE or
+                   self.faces[4].squares[6].color != WHITE or self.faces[4].squares[8].color != WHITE) and (count3 < 3):
+                while(self.faces[4].squares[8].color == WHITE and count2 < 4):
+                    self.cubeRotation("y",0)
+                    update_cube()
+                    count2 += 1
+                count2 = 0
+                if self.faces[2].squares[2].color == WHITE:
+                    if self.faces[4].squares[8].color != WHITE:
                         corner_alg()
-            if self.faces[1].squares[8].color == WHITE:
-                if self.faces[4].squares[8].color != WHITE:
-                    for _ in range(5):
-                        corner_alg()
-            if count < 4:
-                self.faceTurn("D")
-                count += 1
-            else:
-                self.cubeRotation("y",0)
-                count = 0
-            update_cube()
+                if self.faces[5].squares[6].color == WHITE:
+                    if self.faces[4].squares[8].color != WHITE:
+                        for _ in range(3):
+                            corner_alg()
+                if self.faces[1].squares[8].color == WHITE:
+                    if self.faces[4].squares[8].color != WHITE:
+                        for _ in range(5):
+                            corner_alg()
+                if count < 4:
+                    self.faceTurn("D")
+                    count += 1
+                else:
+                    self.cubeRotation("y",0)
+                    count = 0
+                update_cube()
+                count3 += 1
 
-        # lances code in case this ends up being better
+
+        def white_corner_fix():
+            print("Fixing Corners")
+            count4 = 0
+            while count4 < 3:
+                count5 = 0
+                while self.faces[4].squares[8].color != WHITE and count5 < 4:
+                    self.cubeRotation("y", 0)
+                    update_cube()
+                    count5 += 1
+                if (self.faces[1].squares[6].color != self.faces[1].squares[3].color) and self.faces[4].squares[8].color == WHITE:
+                    corner_alg()
+                    if self.faces[2].squares[2].color != self.faces[2].squares[4].color:
+                        self.faceTurn("D")
+                        update_cube()
+                        self.cubeRotation("y", 0)
+                    elif self.faces[3].squares[2].color != self.faces[3].squares[4].color:
+                        self.faceTurn("D")
+                        update_cube()
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                    elif self.faces[0].squares[2].color != self.faces[0].squares[4].color:
+                        self.faceTurn("D")
+                        update_cube()
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                        self.cubeRotation("y", 0)
+                    corner_fix_alg()
+                if self.faces[1].squares[6].color == self.faces[1].squares[3].color:
+                    self.cubeRotation("y", 0)
+                    update_cube()
+                count4 += 1
+                '''
+                if self.faces[1].squares[8].color != self.faces[1].squares[4].color:
+                    self.faceTurn("D")
+                    update_cube()
+                if self.faces[2].squares[8].color != self.faces[2].squares[4].color:
+                    self.faceTurn("D")
+                    update_cube()
+                if self.faces[3].squares[8].color != self.faces[3].squares[4].color:
+                    self.faceTurn("D")
+                    update_cube()
+                if self.faces[0].squares[8].color != self.faces[0].squares[4].color:
+                    self.faceTurn("D")
+                    update_cube()
+                print("while loop 2")
+                while self.faces[2].squares[2].color != WHITE:
+                    self.cubeRotation("y",0)
+                    update_cube()
+                corner_fix_alg()
+                '''
+
+        def is_solved():
+            solved = True
+            if self.faces[4].squares[0].color != WHITE:
+                solved = False
+            if self.faces[4].squares[2].color != WHITE:
+                solved = False
+            if self.faces[4].squares[6].color != WHITE:
+                solved = False
+            if self.faces[4].squares[8].color != WHITE:
+                solved = False
+            if (self.faces[0].squares[0].color or self.faces[0].squares[6].color) != self.faces[0].squares[3].color:
+                solved = False
+            if (self.faces[1].squares[0].color or self.faces[1].squares[6].color) != self.faces[1].squares[3].color:
+                solved = False
+            if (self.faces[2].squares[0].color or self.faces[2].squares[6].color) != self.faces[2].squares[3].color:
+                solved = False
+            if (self.faces[3].squares[0].color or self.faces[3].squares[6].color) != self.faces[3].squares[3].color:
+                solved = False
+            return solved
+
+        #white_face_create()
+
+        time.sleep(1)
+        while not is_solved():
+            print("White Corners Starting")
+            white_face_create()
+            white_corner_fix()
+        print("White Corners Complete")
+
+
+
+
+
+
+
+
+
+
+                    # lances code in case this ends up being better
         '''
         cube_state = self.stringify()
         white_corners = {0, 2, 6, 8}
