@@ -503,7 +503,7 @@ class RubiksCube(pygame.sprite.Sprite):
         for move in sequence:
             self.draw(screen)
             pygame.display.flip()
-            pygame.time.wait(500)
+            pygame.time.wait(100)
             self.faceTurn(move)
 
     def reverse_sequence(self, sequence):
@@ -671,6 +671,15 @@ class RubiksCube(pygame.sprite.Sprite):
                 corner_fix_alg()
                 '''
 
+        def get_unstuck():
+            print("Get Unstuck")
+            self.faceTurn("F")
+            update_cube()
+            self.faceTurn("D")
+            update_cube()
+            self.faceTurn("F'")
+            update_cube()
+
         def is_solved():
             solved = True
             if self.faces[4].squares[0].color != WHITE:
@@ -698,6 +707,8 @@ class RubiksCube(pygame.sprite.Sprite):
             print("White Corners Starting")
             white_face_create()
             white_corner_fix()
+            if self.faces[2].squares[0].color == WHITE:
+                get_unstuck()
         print("White Corners Complete")
 
 
