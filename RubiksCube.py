@@ -535,18 +535,14 @@ class RubiksCube(pygame.sprite.Sprite):
         for move in reversed(sequence):
             self.faceTurn(self.reverse_move(move))
 
-    def algo1(self, solve_type, screen):
-        percent_solved = 1.0
-        if solve_type == "white_cross":
-            percent_solved = self.whiteCross()
-        if solve_type == "white_corners":
-            percent_solved = self.whiteCorners()
-        if solve_type == "full_solve":
-            percent_solved = self.percentSolved()
+    def algo1(self, screen):
+        self.solve_white_cross(screen)
+
+    def solve_white_cross(self, screen):
+        percent_solved = self.whiteCross()
         count = 1
         max_attempts = 2000  # max attempt number
 
-        print(solve_type)
         while percent_solved < 1.0:
             time.sleep(1)
             print("Round: " + str(count) + " percent_solved: " + str(percent_solved))
@@ -561,12 +557,7 @@ class RubiksCube(pygame.sprite.Sprite):
                 sequence = self.generate_random_sequence(sequence_length)
 
                 self.sequence(sequence)
-                if solve_type == "white_cross":
-                    new_percent = self.whiteCross()
-                if solve_type == "white_corners":
-                    new_percent = self.whiteCorners()
-                if solve_type == "full_solve":
-                    new_percent = self.percentSolved()
+                new_percent = self.whiteCross()
 
                 if new_percent > best_percent:
                     best_percent = new_percent
@@ -591,6 +582,15 @@ class RubiksCube(pygame.sprite.Sprite):
             print("Solved")
         else:
             print("Failed")
+        white_corners = {0, 2, 6, 8}
+
+
+    def solve_white_corners(self):
+        cube_state = self.stringify()
+        for corner in white_corners:
+            if cube_state[corner] == "U" and not cube_state[36] == "L" or not cube_state[45] == "B":
+                print()
+                
 
 
 class Face(pygame.sprite.Sprite):
