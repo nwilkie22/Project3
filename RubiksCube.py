@@ -33,19 +33,20 @@ face_indices = {
 }
 
 MOVE_REVERSALS = {
-        "U": "U'",
-        "U'": "U",
-        "D": "D'",
-        "D'": "D",
-        "L": "L'",
-        "L'": "L",
-        "R": "R'",
-        "R'": "R",
-        "F": "F'",
-        "F'": "F",
-        "B": "B'",
-        "B'": "B",
-    }
+    "U": "U'",
+    "U'": "U",
+    "D": "D'",
+    "D'": "D",
+    "L": "L'",
+    "L'": "L",
+    "R": "R'",
+    "R'": "R",
+    "F": "F'",
+    "F'": "F",
+    "B": "B'",
+    "B'": "B",
+}
+
 
 def kociemba_solver(cube):
     # Convert the cube state to a string format that kociemba can solve
@@ -53,6 +54,7 @@ def kociemba_solver(cube):
     solution = kociemba.solve(cube_state)
     solution_steps = solution.split()
     return solution_steps
+
 
 class RubiksCube(pygame.sprite.Sprite):
     def __init__(self, xpos, ypos, size=30):
@@ -84,11 +86,11 @@ class RubiksCube(pygame.sprite.Sprite):
         face = Face(self.xpos + self.size * 3, self.ypos + self.size * 3, self.size, color)
         self.faces.append(face)
 
-        #self.faces[4].squares[2].recolor(RED)
-        #self.faces[0].squares[1].recolor(RED)
-        #self.faces[1].squares[1].recolor(RED)
-        #self.faces[2].squares[1].recolor(RED)
-        #self.faces[3].squares[1].recolor(RED)
+        # self.faces[4].squares[2].recolor(RED)
+        # self.faces[0].squares[1].recolor(RED)
+        # self.faces[1].squares[1].recolor(RED)
+        # self.faces[2].squares[1].recolor(RED)
+        # self.faces[3].squares[1].recolor(RED)
 
     def recalculate_faces(self):
         # L -> B
@@ -389,6 +391,7 @@ class RubiksCube(pygame.sprite.Sprite):
     def printfaces(self):
         for face in self.faces:
             print(face.squares[0].color)
+
     def isSolved(self):
         for face in self.faces:
             for square in face.squares:
@@ -396,11 +399,13 @@ class RubiksCube(pygame.sprite.Sprite):
                 if square.color != test_color:
                     return False
         return True
+
     def scramble(self):
         possible_moves = ["U", "U'", "D", "D'", "L", "L'", "R", "R'", "F", "F'", "B", "B'"]
         for i in range(random.randint(200, 500)):
             random_element = random.choice(possible_moves)
             self.faceTurn(random_element)
+
     def stringify(self):
         position_order = [
             # Up
@@ -442,6 +447,7 @@ class RubiksCube(pygame.sprite.Sprite):
             square = face.squares[square_idx]
             cube += color_map[square.color]
         return cube
+
     def solve_cube(self, screen):
         solution_steps = kociemba_solver(self)
         for step in solution_steps:
@@ -452,6 +458,7 @@ class RubiksCube(pygame.sprite.Sprite):
             pygame.time.wait(500)
             if (self.stringify() == "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB"):
                 break
+
     def percentSolved(self):
         total = 0.0
 
@@ -463,6 +470,7 @@ class RubiksCube(pygame.sprite.Sprite):
 
         average_percentage = total / 9
         return 1 - average_percentage
+
     def whiteCross(self):
         count = 0.0
         arr = [1, 3, 5, 7]
@@ -478,28 +486,33 @@ class RubiksCube(pygame.sprite.Sprite):
         if self.faces[3].squares[3].color == BLUE:
             count += 1.0
         return count / 8
+
     def reverse_move(self, move):
         result = MOVE_REVERSALS[move]
         return result
+
     def generate_random_sequence(self, length):
         possible_moves = ["U", "D", "L", "R", "F", "B", "U'", "D'", "L'", "R'", "F'", "B'"]
         return [random.choice(possible_moves) for _ in range(length)]
+
     def sequence(self, sequence):
         for move in sequence:
             self.faceTurn(move)
+
     def best_sequence(self, sequence, screen):
         for move in sequence:
             self.draw(screen)
             pygame.display.flip()
             pygame.time.wait(500)
             self.faceTurn(move)
+
     def reverse_sequence(self, sequence):
         # Apply the moves in reverse order to undo the sequence
         for move in reversed(sequence):
             self.faceTurn(self.reverse_move(move))
 
     def algo1(self, screen):
-        self.solve_white_corners()
+        self.solve_white_corners(screen)
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -546,7 +559,12 @@ class RubiksCube(pygame.sprite.Sprite):
         else:
             print("Failed")
 
-    def solve_white_corners(self):
+    def solve_white_corners(self, screen):
+        def update_cube():
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(500)
+
         cube_state = self.stringify()
         white_corners = {0, 2, 6, 8}
         for corner in white_corners:
@@ -554,49 +572,60 @@ class RubiksCube(pygame.sprite.Sprite):
                 if cube_state[0] == "U":
                     if cube_state[36] != "L":
                         self.faceTurn("B")
+                        update_cube()
                         self.faceTurn("D")
+                        update_cube()
                         self.faceTurn("B'")
+                        update_cube()
                         self.faceTurn("D'")
+                        update_cube()
                         cube_state = self.stringify()
-                        print(cube_state)
-                        print("Wrong Corner")
                     else:
-                        print("Solved")
                         break
                 else:
-                    if (cube_state[36] == "U" and cube_state[47] == "L") or (cube_state[47] == "U" and cube_state[0] == "L"):
+                    if (cube_state[36] == "U" and cube_state[47] == "L") or (
+                        cube_state[47] == "U" and cube_state[0] == "L"):
                         self.cubeRotation("y", 0)
                         self.cubeRotation("y", 0)
                         self.faceTurn("R'")
+                        update_cube()
                         self.faceTurn("D")
+                        update_cube()
                         self.faceTurn("R")
+                        update_cube()
                         self.faceTurn("D'")
+                        update_cube()
                         self.faceTurn("R'")
+                        update_cube()
                         self.faceTurn("D")
+                        update_cube()
                         self.faceTurn("R")
+                        update_cube()
                         self.cubeRotation("y", 0)
                         self.cubeRotation("y", 0)
                         cube_state = self.stringify()
-                        print("Rotate Corner")
                     else:
-                        if (cube_state[33] == "U" and cube_state[53] == "L") or (cube_state[42] == "U" and cube_state[33] == "L") or (cube_state[53] == "U" and cube_state[42] == "L"):
+                        if (cube_state[33] == "U" and cube_state[53] == "L") or (
+                            cube_state[42] == "U" and cube_state[33] == "L") or (
+                            cube_state[53] == "U" and cube_state[42] == "L"):
                             self.cubeRotation("y", 0)
                             self.cubeRotation("y", 0)
                             self.faceTurn("R'")
+                            update_cube()
                             self.faceTurn("D'")
+                            update_cube()
                             self.faceTurn("R")
+                            update_cube()
                             self.faceTurn("D")
+                            update_cube()
                             self.cubeRotation("y", 0)
                             self.cubeRotation("y", 0)
                             cube_state = self.stringify()
-                            print("Place Corner")
                         else:
                             self.faceTurn("D")
+                            update_cube()
                             cube_state = self.stringify()
                             print("Find Corner")
-        
-
-                
 
 
 class Face(pygame.sprite.Sprite):
