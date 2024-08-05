@@ -544,7 +544,7 @@ class RubiksCube(pygame.sprite.Sprite):
         if solve_type == "full_solve":
             percent_solved = self.percentSolved()
         count = 1
-        max_attempts = 5000  # max attempt number
+        max_attempts = 2000  # max attempt number
 
         print(solve_type)
         while percent_solved < 1.0:
