@@ -503,6 +503,14 @@ class RubiksCube(pygame.sprite.Sprite):
             count += 1.0
         if self.faces[3].squares[6].color == BLUE:
             count += 1.0
+        arr = [2, 4, 6, 8]
+        for i in arr:
+            if self.faces[4].squares[i].color == WHITE:
+                count += 1.0
+        if self.whiteCross != 1.0:
+            return 0
+        else:
+            return count / 9
 
     def reverse_move(self, move):
         result = MOVE_REVERSALS[move]
@@ -516,12 +524,18 @@ class RubiksCube(pygame.sprite.Sprite):
         for move in sequence:
             self.faceTurn(move)
 
+    def best_sequence(self, sequence, screen):
+        for move in sequence:
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(500)
+            self.faceTurn(move)
     def reverse_sequence(self, sequence):
         # Apply the moves in reverse order to undo the sequence
         for move in reversed(sequence):
             self.faceTurn(self.reverse_move(move))
 
-    def algo1(self, solve_type):
+    def algo1(self, solve_type, screen):
         percent_solved = 1.0
         if solve_type == "white_cross":
             percent_solved = self.whiteCross()
@@ -530,7 +544,7 @@ class RubiksCube(pygame.sprite.Sprite):
         if solve_type == "full_solve":
             percent_solved = self.percentSolved()
         count = 1
-        max_attempts = 10000  # max attempt number
+        max_attempts = 5000  # max attempt number
 
         print(solve_type)
         while percent_solved < 1.0:
@@ -565,7 +579,7 @@ class RubiksCube(pygame.sprite.Sprite):
             if best_sequence:
                 print(best_sequence)
                 # Apply the best sequence found
-                self.sequence(best_sequence)
+                self.best_sequence(best_sequence, screen)
                 percent_solved = best_percent
                 print("Best sequence applied with improved percent_solved: " + str(percent_solved))
             else:

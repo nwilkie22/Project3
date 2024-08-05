@@ -164,7 +164,7 @@ while active:
             if other.collidepoint(mouse_x, mouse_y):
                 alg_log_text = "Running Other"
                 draw()
-                cube.algo1("white_cross")
+                cube.algo1("white_cross", screen)
         if cube.isSolved():
             alg_log_text = "Solved"
 
