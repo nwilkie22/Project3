@@ -503,14 +503,14 @@ class RubiksCube(pygame.sprite.Sprite):
             count += 1.0
         if self.faces[3].squares[6].color == BLUE:
             count += 1.0
-        arr = [2, 4, 6, 8]
+        arr = [0, 2, 6, 8]
         for i in arr:
             if self.faces[4].squares[i].color == WHITE:
                 count += 1.0
-        if self.whiteCross != 1.0:
-            return 0
+        if self.whiteCross() != 1.0:
+            return 0.0
         else:
-            return count / 9
+            return count / 12
 
     def reverse_move(self, move):
         result = MOVE_REVERSALS[move]
@@ -544,7 +544,7 @@ class RubiksCube(pygame.sprite.Sprite):
         if solve_type == "full_solve":
             percent_solved = self.percentSolved()
         count = 1
-        max_attempts = 5000  # max attempt number
+        max_attempts = 2000  # max attempt number
 
         print(solve_type)
         while percent_solved < 1.0:
@@ -559,6 +559,7 @@ class RubiksCube(pygame.sprite.Sprite):
                 # max random sequence length
                 sequence_length = random.randint(1, 20)
                 sequence = self.generate_random_sequence(sequence_length)
+
 
                 self.sequence(sequence)
                 if solve_type == "white_cross":

@@ -165,6 +165,7 @@ while active:
                 alg_log_text = "Running Other"
                 draw()
                 cube.algo1("white_cross", screen)
+                cube.algo1("white_corners", screen)
         if cube.isSolved():
             alg_log_text = "Solved"
 
