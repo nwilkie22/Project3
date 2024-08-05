@@ -164,7 +164,11 @@ while active:
             if other.collidepoint(mouse_x, mouse_y):
                 alg_log_text = "Running Other"
                 draw()
+<<<<<<< HEAD
                 cube.algo1("white_cross")
+=======
+                cube.algo1()
+>>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
         if cube.isSolved():
             alg_log_text = "Solved"
 
@@ -178,4 +182,8 @@ while active:
     alg_log = draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
     pygame.display.flip()
 
+<<<<<<< HEAD
 pygame.quit()
+=======
+pygame.quit()
+>>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
