@@ -895,7 +895,7 @@ class RubiksCube(pygame.sprite.Sprite):
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
-            pygame.time.wait(500)
+            pygame.time.wait(100)
         update_cube()
         def is_solved():
             solved = True
@@ -926,8 +926,21 @@ class RubiksCube(pygame.sprite.Sprite):
 
 
         time.sleep(2)
-        while not is_solved():
-            cross_alg()
+        for i in range(4):
+            if is_solved():
+                break
+            if (self.faces[4].squares[1].color and self.faces[4].squares[3].color and self.faces[4].squares[5].color and self.faces[4].squares[7].color) != YELLOW:
+                for _ in range(3):
+                    cross_alg()
+            elif (self.faces[4].squares[1].color and self.faces[4].squares[7].color) == YELLOW:
+                for _ in range(2):
+                    cross_alg()
+            elif (self.faces[4].squares[1].color and self.faces[4].squares[3].color) == YELLOW:
+                cross_alg()
+            self.cubeRotation("y", 0)
+            if is_solved():
+                break
+
 
 
 
