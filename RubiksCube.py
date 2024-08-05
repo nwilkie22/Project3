@@ -84,14 +84,11 @@ class RubiksCube(pygame.sprite.Sprite):
         face = Face(self.xpos + self.size * 3, self.ypos + self.size * 3, self.size, color)
         self.faces.append(face)
 
-<<<<<<< HEAD
         #self.faces[4].squares[2].recolor(RED)
         #self.faces[0].squares[1].recolor(RED)
         #self.faces[1].squares[1].recolor(RED)
         #self.faces[2].squares[1].recolor(RED)
         #self.faces[3].squares[1].recolor(RED)
-=======
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
 
     def recalculate_faces(self):
         # L -> B
@@ -457,11 +454,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.draw(screen)
             pygame.display.flip()
             pygame.time.wait(500)
-<<<<<<< HEAD
             if (self.stringify() == "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB"):
-=======
-            if(self.stringify() == "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB"):
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
                 break
 
     def percentSolved(self):
@@ -476,7 +469,6 @@ class RubiksCube(pygame.sprite.Sprite):
         average_percentage = total / 9
         return 1 - average_percentage
 
-<<<<<<< HEAD
     def whiteCross(self):
         count = 0.0
         arr = [1, 3, 5, 7]
@@ -511,9 +503,15 @@ class RubiksCube(pygame.sprite.Sprite):
             count += 1.0
         if self.faces[3].squares[6].color == BLUE:
             count += 1.0
+        arr = [2, 4, 6, 8]
+        for i in arr:
+            if self.faces[4].squares[i].color == WHITE:
+                count += 1.0
+        if self.whiteCross != 1.0:
+            return 0
+        else:
+            return count / 9
 
-=======
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
     def reverse_move(self, move):
         result = MOVE_REVERSALS[move]
         return result
@@ -526,13 +524,18 @@ class RubiksCube(pygame.sprite.Sprite):
         for move in sequence:
             self.faceTurn(move)
 
+    def best_sequence(self, sequence, screen):
+        for move in sequence:
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(500)
+            self.faceTurn(move)
     def reverse_sequence(self, sequence):
         # Apply the moves in reverse order to undo the sequence
         for move in reversed(sequence):
             self.faceTurn(self.reverse_move(move))
 
-<<<<<<< HEAD
-    def algo1(self, solve_type):
+    def algo1(self, solve_type, screen):
         percent_solved = 1.0
         if solve_type == "white_cross":
             percent_solved = self.whiteCross()
@@ -541,16 +544,9 @@ class RubiksCube(pygame.sprite.Sprite):
         if solve_type == "full_solve":
             percent_solved = self.percentSolved()
         count = 1
-        max_attempts = 10000  # max attempt number
+        max_attempts = 5000  # max attempt number
 
         print(solve_type)
-=======
-    def algo1(self):
-        percent_solved = self.percentSolved()
-        count = 1
-        max_attempts = 10000  # max attempt number
-
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
         while percent_solved < 1.0:
             time.sleep(1)
             print("Round: " + str(count) + " percent_solved: " + str(percent_solved))
@@ -565,45 +561,30 @@ class RubiksCube(pygame.sprite.Sprite):
                 sequence = self.generate_random_sequence(sequence_length)
 
                 self.sequence(sequence)
-<<<<<<< HEAD
                 if solve_type == "white_cross":
                     new_percent = self.whiteCross()
                 if solve_type == "white_corners":
                     new_percent = self.whiteCorners()
                 if solve_type == "full_solve":
                     new_percent = self.percentSolved()
-=======
-                new_percent = self.percentSolved()
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
 
                 if new_percent > best_percent:
                     best_percent = new_percent
                     best_sequence = sequence
 
-<<<<<<< HEAD
                 self.reverse_sequence(sequence)
-=======
-                self.sequence(sequence)
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
 
                 attempt_count += 1
 
             if best_sequence:
-<<<<<<< HEAD
                 print(best_sequence)
-=======
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
                 # Apply the best sequence found
-                self.sequence(best_sequence)
+                self.best_sequence(best_sequence, screen)
                 percent_solved = best_percent
                 print("Best sequence applied with improved percent_solved: " + str(percent_solved))
             else:
                 print("No improvement found in this round.")
-<<<<<<< HEAD
 
-=======
-                break
->>>>>>> 363837f94389a66ef84b8bf06e454cf8a5cb604a
             count += 1
 
         if percent_solved >= 1.0:
