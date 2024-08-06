@@ -6,11 +6,11 @@ from RubiksCube import RubiksCube
 pygame.font.init()
 
 
-def draw_button(screen, text, button_x, button_y):
+def draw_button(screen, text, button_x, button_y, size):
     button_color = (255, 99, 71)
     text_color = (255, 255, 255)
-    font = pygame.font.Font(None, 50)
-    button_width = len(text) * 25
+    font = pygame.font.Font(None, size)
+    button_width = len(text) * size/2
     button_height = 75
     button_surface = pygame.Surface((button_width, button_height))
     button_surface.fill(button_color)
@@ -33,14 +33,29 @@ def draw_text(surface, text, font, color, pos):
 def draw():
     screen.fill(background_color)
     cube.draw(screen)
-    draw_button(screen, "Kociemba", 250, 600)
-    draw_button(screen, "Other", 50, 600)
-    draw_button(screen, "Scramble", 510, 600)
+    draw_button(screen, "Kociemba", 320, 600, 50)
+    draw_button(screen, "Beginner Method", 30, 600, 35)
+    draw_button(screen, "Scramble", 550, 600, 50)
     draw_text(screen, title_text, big_font, text_color_black, (400, 30))
     draw_text(screen, text, font, text_color_black, (185, 520))
     draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
+    draw_move_list()
     pygame.display.flip()
 
+def draw_move_list():
+    count = 0
+    for line in move_list_text:
+        y = 100 + 20 * count
+        draw_text(screen, line, small_font, text_color_black, (650, y))
+        count += 1
+
+def append_move_list(solve_type, size):
+    if len(move_list_text) == 10:
+        move_list_text.pop(0)
+    text = solve_type
+    text += " - Moves: "
+    text += str(size)
+    move_list_text.append(text)
 
 background_color = (255, 255, 255)
 
@@ -48,12 +63,14 @@ screen = pygame.display.set_mode((800, 800))
 pygame.display.set_caption('Rubiks Cube Solver')
 
 # setup move log text vars
+small_font = pygame.font.SysFont(None, 30)
 font = pygame.font.Font(None, 50)
 big_font = pygame.font.Font(None, 75)
 text_color_black = (0, 0, 0)
 text = ""
 title_text = "Rubiks Cube Solver"
 alg_log_text = ""
+move_list_text = []
 
 screen.fill(background_color)
 
@@ -61,6 +78,7 @@ cube = RubiksCube(50, 300)
 print(cube.isSolved())
 active = True
 prime = False
+sort_running = False
 
 while active:
     for event in pygame.event.get():
@@ -152,30 +170,40 @@ while active:
             print(check)
             # Wide moves
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Buttons
-            mouse_x, mouse_y = event.pos
-            if scramble.collidepoint(mouse_x, mouse_y):
-                cube.scramble()
-                alg_log_text = "Scrambled"
-            if kociemba.collidepoint(mouse_x, mouse_y):
-                alg_log_text = "Running Kociemba"
-                draw()
-                cube.solve_cube(screen)
-            if other.collidepoint(mouse_x, mouse_y):
-                alg_log_text = "Running Other"
-                draw()
-                cube.algo1(screen)
+            if not sort_running:
+                # Buttons
+                mouse_x, mouse_y = event.pos
+                if scramble.collidepoint(mouse_x, mouse_y):
+                    sort_running = True
+                    cube.scramble()
+                    alg_log_text = "Scrambled"
+                    sort_running = False
+                if kociemba.collidepoint(mouse_x, mouse_y):
+                    sort_running = True
+                    alg_log_text = "Running Kociemba"
+                    draw()
+                    moves = cube.solve_cube(screen)
+                    append_move_list("Kociemba", len(moves))
+                    sort_running = False
+                if other.collidepoint(mouse_x, mouse_y):
+                    sort_running = True
+                    alg_log_text = "Running BM"
+                    draw()
+                    moves = cube.algo1(screen)
+                    append_move_list("BM", len(moves))
+                    sort_running = False
         if cube.isSolved():
             alg_log_text = "Solved"
 
     screen.fill(background_color)
     cube.draw(screen)
-    kociemba = draw_button(screen, "Kociemba", 250, 600)
-    other = draw_button(screen, "Other", 50, 600)
-    scramble = draw_button(screen, "Scramble", 510, 600)
+    kociemba = draw_button(screen, "Kociemba", 320, 600, 50)
+    other = draw_button(screen, "Beginner Method", 30, 600, 35)
+    scramble = draw_button(screen, "Scramble", 550, 600, 50)
     title = draw_text(screen, title_text, big_font, text_color_black, (400, 30))
     move_log = draw_text(screen, text, font, text_color_black, (185, 520))
     alg_log = draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
+    draw_move_list()
     pygame.display.flip()
 
 pygame.quit()
