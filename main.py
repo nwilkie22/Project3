@@ -1,3 +1,4 @@
+
 # Rubiks Cube Project
 import pygame, sys
 import kociemba
