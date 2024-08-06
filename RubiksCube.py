@@ -601,7 +601,7 @@ class RubiksCube(pygame.sprite.Sprite):
         if percent_solved >= 1.0:
             print("Solved")
         else:
-            print("Failed")
+            print("Failed ")
 
     def solve_white_corners(self, screen):
         def update_cube():
