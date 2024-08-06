@@ -176,9 +176,6 @@ while active:
                 cube.faceTurn("E")
             if event.key == pygame.K_p:
                 cube.solve_cube(screen)
-                print(cube.solve_cube(screen))
-            check = cube.stringify()
-            print(check)
             # Wide moves
         if event.type == pygame.MOUSEBUTTONDOWN:
             if not sort_running:
@@ -212,7 +209,6 @@ while active:
     other = draw_button(screen, "Beginner Method", 30, 600, 35)
     scramble = draw_button(screen, "Scramble", 550, 600, 50)
     title = draw_text(screen, title_text, big_font, text_color_black, (400, 30))
-    move_log = draw_text(screen, text, font, text_color_black, (185, 520))
     alg_log = draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
     prime_main = draw_text(screen, prime_text, small_font, text_color_black, (475, 380))
     R_main = draw_text(screen, R_rotation, small_font, text_color_black, (110, 550))
