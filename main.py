@@ -175,6 +175,9 @@ while active:
                 cube.faceTurn("E")
             if event.key == pygame.K_p:
                 cube.solve_cube(screen)
+                print(cube.solve_cube(screen))
+            check = cube.stringify()
+            print(check)
             # Wide moves
         if event.type == pygame.MOUSEBUTTONDOWN:
             if not sort_running:
