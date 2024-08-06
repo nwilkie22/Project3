@@ -735,47 +735,19 @@ class RubiksCube(pygame.sprite.Sprite):
             return solved
 
         def left_alg():
-            self.faceTurn("U'")
-            update_cube()
-            self.faceTurn("L'")
-            update_cube()
-            self.faceTurn("U'")
-            update_cube()
-            self.faceTurn("L")
-            update_cube()
-            self.faceTurn("U")
-            update_cube()
-            self.faceTurn("F")
-            update_cube()
-            self.faceTurn("U")
-            update_cube()
-            self.faceTurn("F'")
-            update_cube()
-            self.faceTurn("U'")
-            update_cube()
+            arr = ["U'", "L'", "U'", "L", "U", "F", "U", "F'", "U'"]
+            for element in arr:
+                self.faceTurn(element)
+                update_cube()
 
         def right_alg():
-            self.faceTurn("U")
-            update_cube()
-            self.faceTurn("R")
-            update_cube()
-            self.faceTurn("U")
-            update_cube()
-            self.faceTurn("R'")
-            update_cube()
-            self.faceTurn("U'")
-            update_cube()
-            self.faceTurn("F'")
-            update_cube()
-            self.faceTurn("U'")
-            update_cube()
-            self.faceTurn("F")
-            update_cube()
-            self.faceTurn("U")
-            update_cube()
+            arr = ["U", "R", "U", "R'", "U'", "F'", "U'", "F", "U"]
+            for element in arr:
+                self.faceTurn(element)
+                update_cube()
 
         def wrong_orientation():
-            arr = ["U", "R", "U", "R'", "U'", "F'", "U'", "F","U"]
+            arr = ["U", "R", "U", "R'", "U'", "F'", "U'", "F", "U"]
             for element in arr:
                 self.faceTurn(element)
                 update_cube()
@@ -824,11 +796,14 @@ class RubiksCube(pygame.sprite.Sprite):
 
         print("Second Layer")
         time.sleep(2)
-
+        count = 0
         while not is_solved():
+            if count %200 ==0:
+                wrong_orientation()
             checkFront()
             checkAdjacent()
             checkYellow()
+            count += 1
         update_cube()
         
     def yellow_cross(self, screen):
@@ -1030,6 +1005,8 @@ class RubiksCube(pygame.sprite.Sprite):
 
         while self.isSolved() == False:
             if self.faces[2].squares[0].color == YELLOW or self.faces[2].squares[6].color == YELLOW:
+                alg()
+            elif self.faces[1].squares[6].color == YELLOW and self.faces[3].squares[0].color == YELLOW:
                 alg()
             else:
                 self.cubeRotation("y", 0)
