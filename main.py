@@ -37,7 +37,6 @@ def draw():
     draw_button(screen, "Beginner Method", 30, 600, 35)
     draw_button(screen, "Scramble", 550, 600, 50)
     draw_text(screen, title_text, big_font, text_color_black, (400, 30))
-    draw_text(screen, text, font, text_color_black, (185, 520))
     draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
     draw_move_list()
     pygame.display.flip()
