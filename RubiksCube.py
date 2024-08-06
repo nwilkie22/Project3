@@ -556,9 +556,7 @@ class RubiksCube(pygame.sprite.Sprite):
         self.yellow_cross(screen)
         self.swap_yellow_edges(screen)
         self.position_yellow_corners(screen)
-        self.rotate_yellow_corners(screen)
-        print(self.move_list)
-        return self.move_list
+        self.finnish_cube(screen)
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -1172,6 +1170,8 @@ class RubiksCube(pygame.sprite.Sprite):
     def rotate_yellow_corners(self, screen):
         print("rotate yellow corners")
 
+    def rotate_yellow_corners(self, screen):
+        print("rotate yellow corners")
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
@@ -1190,6 +1190,7 @@ class RubiksCube(pygame.sprite.Sprite):
                 self.cubeRotation("y", 0)
 
         print("Solved")
+
 
 
 class Face(pygame.sprite.Sprite):
