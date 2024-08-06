@@ -517,7 +517,7 @@ class RubiksCube(pygame.sprite.Sprite):
         self.second_layer(screen)
         self.yellow_cross(screen)
         self.swap_yellow_edges(screen)
-        self.swap_yellow_edges(screen)
+        self.position_yellow_corners(screen)
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -872,7 +872,7 @@ class RubiksCube(pygame.sprite.Sprite):
 
         def checkAdjacent():
             print("Check Adjacent")
-            for i in range(3):
+            for i in range(4):
                 if (self.faces[1].squares[7].color == self.faces[2].squares[4].color) and (self.faces[2].squares[1].color == self.faces[1].squares[4].color):
                     wrong_orientation()
                 elif (self.faces[1].squares[7].color == self.faces[3].squares[4].color) and (self.faces[3].squares[1].color == self.faces[1].squares[4].color):
@@ -1061,22 +1061,25 @@ class RubiksCube(pygame.sprite.Sprite):
         update_cube()
 
     def position_yellow_corners(self, screen):
-        self.cubeRotation("x", 0)
-        self.cubeRotation("x", 0)
-
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
-            pygame.time.wait(100)
+            pygame.time.wait(500)
 
+        self.cubeRotation("x", 0)
+        self.cubeRotation("x", 0)
         update_cube()
 
         def is_solved():
             solved = True
-            arr = [0, 2, 6, 8]
-            for i in arr:
-                if self.faces[4].squares[i].color != YELLOW:
-                    solved = False
+            if self.faces[4].squares[0].color != YELLOW:
+                solved = False
+            if self.faces[4].squares[2].color != YELLOW:
+                solved = False
+            if self.faces[4].squares[6].color != YELLOW:
+                solved = False
+            if self.faces[4].squares[8].color != YELLOW:
+                solved = False
             return solved
         def swap_alg():
             print("Swapping")
@@ -1088,13 +1091,22 @@ class RubiksCube(pygame.sprite.Sprite):
         time.sleep(2)
         print("Swap Yellow Edges")
 
-        for i in range(4):
+        for _ in range(4):
+            print("Color: " + str(self.faces[4].squares[8].color))
             if self.faces[4].squares[8].color != YELLOW:
                 self.cubeRotation("y",0)
                 update_cube()
+        if not is_solved():
+            print("swap")
             swap_alg()
-            while not is_solved():
-                swap_alg()
+        for _ in range(4):
+            print("Color: " + str(self.faces[4].squares[8].color))
+            if self.faces[4].squares[8].color != YELLOW:
+                self.cubeRotation("y",0)
+                update_cube()
+        if not is_solved():
+            print("swap")
+            swap_alg()
         self.cubeRotation("x", 0)
         self.cubeRotation("x", 0)
         update_cube()
