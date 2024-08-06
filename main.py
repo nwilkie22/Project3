@@ -39,6 +39,7 @@ def draw():
     draw_text(screen, title_text, big_font, text_color_black, (400, 30))
     draw_text(screen, text, font, text_color_black, (185, 520))
     draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
+    draw_text(screen, prime_text, font, text_color_black, (300, 180))
     draw_move_list()
     pygame.display.flip()
 
@@ -71,6 +72,15 @@ text = ""
 title_text = "Rubiks Cube Solver"
 alg_log_text = ""
 move_list_text = []
+prime1 = "Prime On"
+not_prime1 = "Prime Off"
+prime_text = "Prime Off"
+U_rotation = "Up rotation press U"
+D_rotation = "Down rotation press D"
+R_rotation = "Right rotation press R"
+L_rotation = "Left rotation press L"
+F_rotation = "Forward rotation press F"
+B_rotation = "Backward rotation press B"
 
 screen.fill(background_color)
 
@@ -88,14 +98,15 @@ while active:
         # temp code for testing rotations
         # Press key for rotation, press space to switch from prime to not prime
         if event.type == pygame.KEYDOWN:
-            alg_log_text = ""
             # Prime toggle
             if event.key == pygame.K_SPACE:
                 prime = not prime
                 if prime:
                     print("Prime")
+                    prime_text = prime1
                 else:
                     print("Not Prime")
+                    prime_text = not_prime1
             # Basic moves
             if event.key == pygame.K_u:
                 if prime == False:
@@ -203,6 +214,13 @@ while active:
     title = draw_text(screen, title_text, big_font, text_color_black, (400, 30))
     move_log = draw_text(screen, text, font, text_color_black, (185, 520))
     alg_log = draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
+    prime_main = draw_text(screen, prime_text, small_font, text_color_black, (475, 380))
+    R_main = draw_text(screen, R_rotation, small_font, text_color_black, (110, 550))
+    D_main = draw_text(screen, D_rotation, small_font, text_color_black, (340, 550))
+    F_main = draw_text(screen, F_rotation, small_font, text_color_black, (600, 550))
+    L_main = draw_text(screen, L_rotation, small_font, text_color_black, (100, 500))
+    U_main = draw_text(screen, U_rotation, small_font, text_color_black, (330, 500))
+    B_main = draw_text(screen, B_rotation, small_font, text_color_black, (600, 500))
     draw_move_list()
     pygame.display.flip()
 
