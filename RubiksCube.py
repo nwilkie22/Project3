@@ -518,6 +518,7 @@ class RubiksCube(pygame.sprite.Sprite):
         self.yellow_cross(screen)
         self.swap_yellow_edges(screen)
         self.position_yellow_corners(screen)
+        self.finnish_cube(screen)
 
     def solve_white_cross(self, screen):
         percent_solved = self.whiteCross()
@@ -792,6 +793,7 @@ class RubiksCube(pygame.sprite.Sprite):
     def second_layer(self, screen):
         self.cubeRotation("x", 0)
         self.cubeRotation("x", 0)
+
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
@@ -799,13 +801,17 @@ class RubiksCube(pygame.sprite.Sprite):
 
         def is_solved():
             solved = True
-            if (self.faces[0].squares[1].color != self.faces[0].squares[4].color) or (self.faces[0].squares[7].color != self.faces[0].squares[4].color):
+            if (self.faces[0].squares[1].color != self.faces[0].squares[4].color) or (
+                    self.faces[0].squares[7].color != self.faces[0].squares[4].color):
                 solved = False
-            if (self.faces[1].squares[1].color != self.faces[1].squares[4].color) or (self.faces[1].squares[7].color != self.faces[1].squares[4].color):
+            if (self.faces[1].squares[1].color != self.faces[1].squares[4].color) or (
+                    self.faces[1].squares[7].color != self.faces[1].squares[4].color):
                 solved = False
-            if (self.faces[2].squares[1].color != self.faces[2].squares[4].color) or (self.faces[2].squares[7].color != self.faces[2].squares[4].color):
+            if (self.faces[2].squares[1].color != self.faces[2].squares[4].color) or (
+                    self.faces[2].squares[7].color != self.faces[2].squares[4].color):
                 solved = False
-            if (self.faces[3].squares[1].color != self.faces[3].squares[4].color) or (self.faces[3].squares[7].color != self.faces[3].squares[4].color):
+            if (self.faces[3].squares[1].color != self.faces[3].squares[4].color) or (
+                    self.faces[3].squares[7].color != self.faces[3].squares[4].color):
                 solved = False
             return solved
 
@@ -814,7 +820,7 @@ class RubiksCube(pygame.sprite.Sprite):
             update_cube()
             self.faceTurn("L'")
             update_cube()
-            self.faceTurn("U")
+            self.faceTurn("U'")
             update_cube()
             self.faceTurn("L")
             update_cube()
@@ -822,7 +828,7 @@ class RubiksCube(pygame.sprite.Sprite):
             update_cube()
             self.faceTurn("F")
             update_cube()
-            self.faceTurn("U'")
+            self.faceTurn("U")
             update_cube()
             self.faceTurn("F'")
             update_cube()
@@ -832,7 +838,7 @@ class RubiksCube(pygame.sprite.Sprite):
             update_cube()
             self.faceTurn("R")
             update_cube()
-            self.faceTurn("U'")
+            self.faceTurn("U")
             update_cube()
             self.faceTurn("R'")
             update_cube()
@@ -840,13 +846,13 @@ class RubiksCube(pygame.sprite.Sprite):
             update_cube()
             self.faceTurn("F'")
             update_cube()
-            self.faceTurn("U")
+            self.faceTurn("U'")
             update_cube()
             self.faceTurn("F")
             update_cube()
 
         def wrong_orientation():
-            arr = ["U", "R", "U'", "R'", "U'", "F'", "U", "F", "U", "U", "U", "R", "U'", "R'", "U'", "F'", "U", "F"]
+            arr = ["U", "R", "U", "R'", "U'", "F'", "U'", "F"]
             for element in arr:
                 self.faceTurn(element)
                 update_cube()
@@ -856,7 +862,12 @@ class RubiksCube(pygame.sprite.Sprite):
             for i in range(4):
                 for j in range(4):
                     if self.faces[1].squares[4].color == self.faces[1].squares[3].color:
-                        pass
+                        if self.faces[4].squares[5].color == self.faces[0].squares[4].color:
+                            left_alg()
+                            return False
+                        if self.faces[4].squares[5].color == self.faces[2].squares[4].color:
+                            right_alg()
+                            return False
                     else:
                         self.faceTurn("U")
                         update_cube()
@@ -872,26 +883,28 @@ class RubiksCube(pygame.sprite.Sprite):
 
         def checkAdjacent():
             print("Check Adjacent")
-            for i in range(4):
-                if (self.faces[1].squares[7].color == self.faces[2].squares[4].color) and (self.faces[2].squares[1].color == self.faces[1].squares[4].color):
+            for i in range(3):
+                if (self.faces[1].squares[7].color == self.faces[2].squares[4].color) and (
+                        self.faces[2].squares[1].color == self.faces[1].squares[4].color):
                     wrong_orientation()
-                elif (self.faces[1].squares[7].color == self.faces[3].squares[4].color) and (self.faces[3].squares[1].color == self.faces[1].squares[4].color):
+                elif (self.faces[1].squares[7].color == self.faces[3].squares[4].color) and (
+                        self.faces[3].squares[1].color == self.faces[1].squares[4].color):
                     wrong_orientation()
-                    self.cubeRotation("y",0)
+                    self.cubeRotation("y", 0)
                     update_cube()
                     wrong_orientation()
                     self.cubeRotation("y", 1)
                     update_cube()
                 self.cubeRotation("y", 0)
                 update_cube()
+
         def checkYellow():
             print("Check Yellow")
             for i in range(4):
-                if self.faces[1].squares[1] == YELLOW:
+                if self.faces[i].squares[1] == YELLOW:
                     left_alg()
-                elif self.faces[1].squares[7] == YELLOW:
+                if self.faces[i].squares[7] == YELLOW:
                     right_alg()
-                self.cubeRotation("y", 0)
 
         print("Second Layer")
         time.sleep(2)
@@ -900,7 +913,6 @@ class RubiksCube(pygame.sprite.Sprite):
             checkFront()
             checkAdjacent()
             checkYellow()
-
         self.cubeRotation("x", 0)
         self.cubeRotation("x", 0)
         update_cube()
@@ -1064,7 +1076,7 @@ class RubiksCube(pygame.sprite.Sprite):
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
-            pygame.time.wait(500)
+            pygame.time.wait(100)
 
         self.cubeRotation("x", 0)
         self.cubeRotation("x", 0)
@@ -1111,6 +1123,133 @@ class RubiksCube(pygame.sprite.Sprite):
         self.cubeRotation("x", 0)
         update_cube()
 
+    def finnish_cube(self, screen):
+        def update_cube():
+            self.draw(screen)
+            pygame.display.flip()
+            pygame.time.wait(100)
+
+        def alg():
+            self.faceTurn("R'")
+            update_cube()
+            self.faceTurn("D'")
+            update_cube()
+            self.faceTurn("R")
+            update_cube()
+            self.faceTurn("D")
+            update_cube()
+
+        time.sleep(2)
+        self.cubeRotation("x", 0)
+        self.cubeRotation("x", 0)
+        update_cube()
+        print("Final Step")
+        for _ in range(4):
+            if (self.faces[4].squares[2] != YELLOW) and (self.faces[4].squares[8] != YELLOW) and (self.faces[2].squares[0] == YELLOW) and (self.faces[0].squares[6] == YELLOW):
+                print("case 1")
+                alg()
+                alg()
+                self.faceTurn("U'")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+            elif (self.faces[4].squares[2] != YELLOW) and (self.faces[4].squares[8] != YELLOW) and (self.faces[1].squares[0] == YELLOW) and (self.faces[0].squares[6] == YELLOW):
+                print("case 2")
+                for i in range(4):
+                    alg()
+                self.faceTurn("U'")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+            elif (self.faces[1].squares[0] == YELLOW) and (self.faces[2].squares[0] == YELLOW) and (self.faces[3].squares[0] == YELLOW):
+                print("case 3")
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+            elif (self.faces[1].squares[6] == YELLOW) and (self.faces[2].squares[6] == YELLOW) and (self.faces[0].squares[6] == YELLOW):
+                print("case 4")
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+            elif (self.faces[0].squares[6] == YELLOW) and (self.faces[3].squares[0] == YELLOW):
+                print("case 5")
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+            elif (self.faces[1].squares[0] == YELLOW) and (self.faces[1].squares[6] == YELLOW) and (self.faces[2].squares[6] == YELLOW) and (self.faces[0].squares[0] == YELLOW):
+                print("case 6")
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+            elif (self.faces[2].squares[0] == YELLOW) and (self.faces[3].squares[0] == YELLOW) and (self.faces[3].squares[6] == YELLOW) and (self.faces[0].squares[6] == YELLOW):
+                print("case 7")
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                alg()
+                alg()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+                for i in range(4):
+                    alg()
+                self.faceTurn("U")
+                update_cube()
+            if self.isSolved():
+                break
+            self.cubeRotation("y", 0)
+            update_cube()
 
 
 class Face(pygame.sprite.Sprite):
