@@ -794,11 +794,14 @@ class RubiksCube(pygame.sprite.Sprite):
 
         print("Second Layer")
         time.sleep(2)
-
+        count = 0
         while not is_solved():
+            if count %200 ==0:
+                wrong_orientation()
             checkFront()
             checkAdjacent()
             checkYellow()
+            count += 1
         update_cube()
 
     def yellow_cross(self, screen):
@@ -1008,7 +1011,6 @@ class RubiksCube(pygame.sprite.Sprite):
                 alg()
             else:
                 self.cubeRotation("y", 0)
-
         print("Solved")
 
 
