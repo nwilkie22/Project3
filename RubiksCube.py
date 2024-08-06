@@ -549,6 +549,7 @@ class RubiksCube(pygame.sprite.Sprite):
             self.move_list.pop()
 
     def algo1(self, screen):
+        self.move_list = []
         self.solve_white_cross(screen)
         self.solve_white_corners(screen)
         self.second_layer(screen)
@@ -565,7 +566,6 @@ class RubiksCube(pygame.sprite.Sprite):
         max_attempts = 2000  # max attempt number
 
         while percent_solved < 1.0:
-            time.sleep(1)
             print("Round: " + str(count) + " percent_solved: " + str(percent_solved))
 
             attempt_count = 0
@@ -735,7 +735,6 @@ class RubiksCube(pygame.sprite.Sprite):
                 solved = False
             return solved
 
-        time.sleep(1)
         while not is_solved():
             print("White Corners Starting")
             white_face_create()
@@ -835,7 +834,7 @@ class RubiksCube(pygame.sprite.Sprite):
 
         count = 0
         while not is_solved():
-            if count % 100 == 0:
+            if count % 75 == 0:
                 wrong_orientation()
             checkFront()
             checkAdjacent()
@@ -994,7 +993,6 @@ class RubiksCube(pygame.sprite.Sprite):
 
         update_cube()
 
-        time.sleep(2)
         print("Swap Yellow Edges")
 
         counter = 0
