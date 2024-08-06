@@ -1170,30 +1170,29 @@ class RubiksCube(pygame.sprite.Sprite):
 
     def rotate_yellow_corners(self, screen):
         print("rotate yellow corners")
-
-    def rotate_yellow_corners(self, screen):
-        print("rotate yellow corners")
         def update_cube():
             self.draw(screen)
             pygame.display.flip()
             pygame.time.wait(100)
-
         def alg():
             moves = ["R", "U", "U", "R'", "U'", "R", "U'", "R'", "L'", "U", "U", "L", "U", "L'", "U", "L"]
             for move in moves:
                 self.faceTurn(move)
                 update_cube()
-
         while self.isSolved() == False:
             if self.faces[2].squares[0].color == YELLOW or self.faces[2].squares[6].color == YELLOW:
                 alg()
             else:
                 self.cubeRotation("y", 0)
 
-        while self.faces[1].squares[4] != GREEN:
-            self.cubeRotation("y", 0)
-
         print("Solved")
+
+        for i in range(4):
+            if self.faces[1].squares[4].color != GREEN:
+                self.cubeRotation("y", 0)
+                update_cube()
+
+        #print("Solved")
 
 
 
