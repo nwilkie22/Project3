@@ -39,7 +39,7 @@ def draw():
     draw_text(screen, title_text, big_font, text_color_black, (400, 30))
     draw_text(screen, text, font, text_color_black, (185, 520))
     draw_text(screen, alg_log_text, font, text_color_black, (185, 180))
-    draw_text(screen, prime_text, font, text_color_black, (300, 180))
+    draw_text(screen, prime_text, small_font, text_color_black, (475, 380))
     draw_move_list()
     pygame.display.flip()
 
