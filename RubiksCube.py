@@ -1083,10 +1083,14 @@ class RubiksCube(pygame.sprite.Sprite):
 
         print("Solved")
 
+        if self.faces[4].squares[4].color == YELLOW:
+            self.cubeRotation("x", 0)
+            self.cubeRotation("x", 0)
         for i in range(4):
             if self.faces[1].squares[4].color != GREEN:
                 self.cubeRotation("y", 0)
                 update_cube()
+
 
         #print("Solved")
 
