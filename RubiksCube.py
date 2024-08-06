@@ -1082,20 +1082,26 @@ class RubiksCube(pygame.sprite.Sprite):
         self.cubeRotation("x", 0)
         update_cube()
 
-        def is_solved():
+        def is_valid_corner():
+            arr = []
             solved = True
-            if self.faces[4].squares[0].color != YELLOW:
+            arr.append(self.faces[1].squares[4].color)
+            arr.append(self.faces[2].squares[4].color)
+            arr.append(YELLOW)
+            if self.faces[1].squares[6].color in arr:
+                arr.remove(self.faces[1].squares[6].color)
                 solved = False
-            if self.faces[4].squares[2].color != YELLOW:
+            if self.faces[2].squares[0].color in arr:
+                arr.remove(self.faces[2].squares[0].color)
                 solved = False
-            if self.faces[4].squares[6].color != YELLOW:
-                solved = False
-            if self.faces[4].squares[8].color != YELLOW:
+            if self.faces[4].squares[8].color in arr:
+                arr.remove(self.faces[4].squares[8].color)
                 solved = False
             return solved
+
         def swap_alg():
             print("Swapping")
-            arr = ["U", "R", "U'", "L'", "U", "R'","U'","L"]
+            arr = ["U", "R", "U'", "L'", "U", "R'", "U'", "L"]
             for element in arr:
                 self.faceTurn(element)
                 update_cube()
@@ -1103,25 +1109,30 @@ class RubiksCube(pygame.sprite.Sprite):
         time.sleep(2)
         print("Swap Yellow Edges")
 
+        num_valid_corners = 0
         for _ in range(4):
-            print("Color: " + str(self.faces[4].squares[8].color))
-            if self.faces[4].squares[8].color != YELLOW:
-                self.cubeRotation("y",0)
-                update_cube()
-        if not is_solved():
-            print("swap")
+            if is_valid_corner():
+                num_valid_corners += 1
+            self.cubeRotation("y",0)
+            update_cube()
+
+        if num_valid_corners == 0:
             swap_alg()
-        for _ in range(4):
-            print("Color: " + str(self.faces[4].squares[8].color))
-            if self.faces[4].squares[8].color != YELLOW:
-                self.cubeRotation("y",0)
-                update_cube()
-        if not is_solved():
-            print("swap")
+        elif num_valid_corners == 4:
+            return
+        else:
+            for _ in range(4):
+                if is_valid_corner():
+                    pass
+                else:
+                    self.cubeRotation("y",0)
+                    update_cube()
             swap_alg()
+
         self.cubeRotation("x", 0)
         self.cubeRotation("x", 0)
         update_cube()
+
 
     def finnish_cube(self, screen):
         def update_cube():
@@ -1250,6 +1261,7 @@ class RubiksCube(pygame.sprite.Sprite):
                 break
             self.cubeRotation("y", 0)
             update_cube()
+
 
 
 class Face(pygame.sprite.Sprite):
