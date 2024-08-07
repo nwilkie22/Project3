@@ -1,10 +1,11 @@
-# Rubiks Cube Project
+# Rubiks Cube Project by Lance Tan, Pablo Sabogal, Nic Wilkie
 import pygame, sys
 import kociemba
 from RubiksCube import RubiksCube
 
 pygame.font.init()
 
+#General function to draw buttons
 
 def draw_button(screen, text, button_x, button_y, size):
     button_color = (255, 99, 71)
@@ -23,7 +24,7 @@ def draw_button(screen, text, button_x, button_y, size):
     b = screen.blit(button_surface, (button_x, button_y))
     return b
 
-
+#General function to draw text
 def draw_text(surface, text, font, color, pos):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect(center=pos)
@@ -81,7 +82,7 @@ F_rotation = "Forward rotation press F"
 B_rotation = "Backward rotation press B"
 
 screen.fill(background_color)
-
+#Make the cube object
 cube = RubiksCube(50, 300)
 print(cube.isSolved())
 active = True
@@ -152,11 +153,6 @@ while active:
                     cube.cubeRotation("y", 0)
                 else:
                     cube.cubeRotation("y", 1)
-            if event.key == pygame.K_z:
-                if prime == False:
-                    cube.cubeRotation("z", 0)
-                else:
-                    cube.cubeRotation("z'", 1)
             if event.key == pygame.K_k:
                 if prime == False:
                     cube.rotation(0)
@@ -203,7 +199,7 @@ while active:
                     sort_running = False
         if cube.isSolved():
             alg_log_text = "Solved"
-
+    #Draw everything on the screen
     screen.fill(background_color)
     cube.draw(screen)
     kociemba = draw_button(screen, "Kociemba", 320, 600, 50)
